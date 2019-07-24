@@ -25,6 +25,11 @@ abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationS
 		super.onBackPressed()
 	}
 
+	override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+		outState?.let { viewModel.onSaveViewModelState(outState) }
+		super.onSaveInstanceState(outState, outPersistentState)
+	}
+
 	abstract fun getViewModel(savedState: Bundle?): BaseViewModel<WS, NS, E>
 
 }
