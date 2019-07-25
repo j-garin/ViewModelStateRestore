@@ -6,10 +6,10 @@ import com.jgarin.viewmodelstaterestore.activity_based.base.BaseReducer
 import com.jgarin.viewmodelstaterestore.activity_based.base.BaseViewModel
 import com.jgarin.viewmodelstaterestore.extensions.map
 
-class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState, WorkflowOneScreen, WorkflowOneEvent>(savedState) {
+class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(savedState) {
 
 	override fun onSaveViewModelState(outState: Bundle) {
-		outState.putSerializable(SCREEN_KEY, reducer.navigationStream.value)
+		outState.putSerializable(SCREEN_KEY, reducer.navigationScreen.value)
 		outState.putString(INPUT_KEY, reducer.stateStream.value?.input)
 	}
 
@@ -20,7 +20,7 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState
 		)
 	}
 
-	override val reducer: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen> by lazy {
+	override val reducer: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> by lazy {
 		WorkflowOneReducer(
 				initialScreen = savedState?.getSerializable(SCREEN_KEY)
 						as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
@@ -47,6 +47,10 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState
 
 	interface ScreenTwo {
 		val btnOkEnabled: LiveData<Boolean>
+	}
+
+	override fun onBackPressed() {
+		reducer.submit(WorkflowOneEvent.OnBackPressed)
 	}
 
 	fun next() {

@@ -8,4 +8,5 @@ sealed class WorkflowOneEvent : BaseEvent {
 	class InputChanged(val input: String) : WorkflowOneEvent()
 	object SaveInput : WorkflowOneEvent()
 	object CancelInput : WorkflowOneEvent()
+	object OnBackPressed: WorkflowOneEvent()
 }

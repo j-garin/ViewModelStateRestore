@@ -12,11 +12,11 @@ import com.jgarin.viewmodelstaterestore.activity_based.workflow_one.screen_01_02
 import com.jgarin.viewmodelstaterestore.activity_based.workflow_one.screen_01_03.FragmentOneThree
 import com.jgarin.viewmodelstaterestore.extensions.viewModelFactory
 
-class WorkflowOneActivity : BaseWorkflowActivity<WorkflowOneState, WorkflowOneScreen, WorkflowOneEvent>() {
+class WorkflowOneActivity : BaseWorkflowActivity<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>() {
 
 	override val layout: LayoutResId = R.layout.fragment_container
 
-	override fun getViewModel(savedState: Bundle?): BaseViewModel<WorkflowOneState, WorkflowOneScreen, WorkflowOneEvent> {
+	override fun getViewModel(savedState: Bundle?): BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
 		return ViewModelProviders.of(this, viewModelFactory { WorkflowOneViewModel(savedState) })
 				.get(WorkflowOneViewModel::class.java)
 	}
@@ -27,6 +27,13 @@ class WorkflowOneActivity : BaseWorkflowActivity<WorkflowOneState, WorkflowOneSc
 			WorkflowOneScreen.ScreenOne   -> if (currentFragment !is FragmentOneOne) replaceFragment(FragmentOneOne())
 			WorkflowOneScreen.ScreenTwo   -> if (currentFragment !is FragmentOneTwo) replaceFragment(FragmentOneTwo())
 			WorkflowOneScreen.ScreenThree -> if (currentFragment !is FragmentOneThree) replaceFragment(FragmentOneThree())
+		}
+	}
+
+	override fun handleWorkFlowChange(navigationEvent: WorkflowOneWorkflowNavigation) {
+		when (navigationEvent) {
+			WorkflowOneWorkflowNavigation.Back           -> finish()
+			is WorkflowOneWorkflowNavigation.WorkflowTwo -> startActivity(navigationEvent.getLaunchIntent(this))
 		}
 	}
 

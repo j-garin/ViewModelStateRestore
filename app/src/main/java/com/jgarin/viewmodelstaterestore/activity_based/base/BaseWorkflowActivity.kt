@@ -7,10 +7,11 @@ import com.jgarin.viewmodelstaterestore.extensions.observeNonNull
 
 typealias LayoutResId = Int
 
-abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationScreen, E : BaseEvent>: AppCompatActivity() {
+abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow> : AppCompatActivity() {
 
 	protected abstract val layout: LayoutResId
-	private lateinit var viewModel: BaseViewModel<WS, NS, E>
+	// Not sure about the visibility modifier here. Can you think of a case where you actually need the reference to this viewModel in the activity?
+	protected lateinit var viewModel: BaseViewModel<E, WS, NS, NW>
 
 	override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
 		super.onCreate(savedInstanceState, persistentState)
@@ -18,11 +19,13 @@ abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationS
 		setContentView(layout)
 		viewModel = getViewModel(savedInstanceState)
 		viewModel.navigationStream.observeNonNull(this, ::handleScreenChange)
+		viewModel.navigationWorkflow.observeNonNull(this) { singleLiveEvent ->
+			singleLiveEvent.value?.let { handleWorkFlowChange(it) }
+		}
 	}
 
 	override fun onBackPressed() {
-		// TODO think of a way to handle back navigation here
-		super.onBackPressed()
+		viewModel.onBackPressed()
 	}
 
 	override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
@@ -30,8 +33,10 @@ abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationS
 		super.onSaveInstanceState(outState, outPersistentState)
 	}
 
-	protected abstract fun getViewModel(savedState: Bundle?): BaseViewModel<WS, NS, E>
+	protected abstract fun getViewModel(savedState: Bundle?): BaseViewModel<E, WS, NS, NW>
 
 	protected abstract fun handleScreenChange(screen: NS)
+
+	protected abstract fun handleWorkFlowChange(navigationEvent: NW)
 
 }

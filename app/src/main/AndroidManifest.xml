@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity_based.workflow_one.WorkflowOneActivity"/>
+        <activity android:name=".activity_based.workflow_two.WorkflowTwoActivity" />
     </application>
 
 </manifest>

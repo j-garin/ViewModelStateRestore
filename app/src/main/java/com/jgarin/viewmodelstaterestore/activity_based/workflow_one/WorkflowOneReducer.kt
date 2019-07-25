@@ -3,24 +3,48 @@ package com.jgarin.viewmodelstaterestore.activity_based.workflow_one
 import com.jgarin.viewmodelstaterestore.activity_based.base.BaseReducer
 
 class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: WorkflowOneState)
-	: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen>(initialState, initialScreen) {
+	: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(initialState, initialScreen) {
 
-	override fun reduce(event: WorkflowOneEvent,
-	                    prev: WorkflowOneState,
-	                    screen: WorkflowOneScreen
-	): Pair<WorkflowOneState, WorkflowOneScreen?> {
+	override fun generateNewState(event: WorkflowOneEvent,
+	                              prev: WorkflowOneState,
+	                              screen: WorkflowOneScreen
+	): WorkflowOneState {
 		return when (event) {
-			WorkflowOneEvent.GoToNext -> prev to when (screen) {
-				WorkflowOneScreen.ScreenOne -> WorkflowOneScreen.ScreenThree
-				WorkflowOneScreen.ScreenTwo -> TODO()
-				WorkflowOneScreen.ScreenThree -> TODO()
-			}
-			WorkflowOneEvent.GoToInput -> prev to WorkflowOneScreen.ScreenTwo
-			is WorkflowOneEvent.InputChanged -> prev.copy(tmpInput = event.input) to null
-			WorkflowOneEvent.SaveInput -> prev.copy(input = prev.tmpInput, tmpInput = "") to WorkflowOneScreen.ScreenOne
-			WorkflowOneEvent.CancelInput -> prev.copy(tmpInput = prev.input) to WorkflowOneScreen.ScreenOne
+			WorkflowOneEvent.GoToNext        -> prev
+			WorkflowOneEvent.GoToInput       -> prev
+			is WorkflowOneEvent.InputChanged -> prev.copy(tmpInput = event.input)
+			WorkflowOneEvent.SaveInput       -> prev.copy(input = prev.tmpInput, tmpInput = "")
+			WorkflowOneEvent.CancelInput     -> prev.copy(tmpInput = prev.input)
+			WorkflowOneEvent.OnBackPressed   -> if (screen == WorkflowOneScreen.ScreenTwo)
+				prev.copy(tmpInput = prev.input)
+			else
+				prev
 		}
 
+	}
+
+	override fun generateNewScreen(event: WorkflowOneEvent, prev: WorkflowOneState, screen: WorkflowOneScreen): WorkflowOneScreen {
+		return when (event) {
+			WorkflowOneEvent.GoToNext        -> when (screen) {
+				WorkflowOneScreen.ScreenOne   -> WorkflowOneScreen.ScreenThree
+				WorkflowOneScreen.ScreenTwo   -> screen
+				WorkflowOneScreen.ScreenThree -> screen
+			}
+
+			WorkflowOneEvent.GoToInput       -> WorkflowOneScreen.ScreenTwo
+			is WorkflowOneEvent.InputChanged -> screen
+			WorkflowOneEvent.SaveInput,
+			WorkflowOneEvent.CancelInput     -> WorkflowOneScreen.ScreenOne
+			WorkflowOneEvent.OnBackPressed   -> when (screen) {
+				WorkflowOneScreen.ScreenOne   -> screen
+				WorkflowOneScreen.ScreenTwo,
+				WorkflowOneScreen.ScreenThree -> WorkflowOneScreen.ScreenOne
+			}
+		}
+	}
+
+	override fun generateNewWorkflow(event: WorkflowOneEvent, prev: WorkflowOneState, screen: WorkflowOneScreen): WorkflowOneWorkflowNavigation? {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
 }
