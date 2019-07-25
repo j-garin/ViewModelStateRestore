@@ -9,11 +9,18 @@ import com.jgarin.viewmodelstaterestore.extensions.map
 class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState, WorkflowOneScreen, WorkflowOneEvent>(savedState) {
 
 	override fun onSaveViewModelState(outState: Bundle) {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		outState.putSerializable(SCREEN_KEY, reducer.navigationStream.value)
+		outState.putString(INPUT_KEY, reducer.stateStream.value?.input)
 	}
 
-	override val reducer: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen>
-		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+	override val reducer: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen> by lazy {
+		WorkflowOneReducer(initialScreen = savedState?.getSerializable(SCREEN_KEY)
+				as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
+				initialState = WorkflowOneState(
+						input = savedState?.getString(INPUT_KEY) ?: ""
+				)
+		)
+	}
 
 	val screenOne = object : ScreenOne {
 		override val inputText: LiveData<String> = reducer.stateStream
@@ -33,6 +40,11 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState
 
 	fun goToInput() {
 		reducer.submit(WorkflowOneEvent.GoToInput)
+	}
+
+	companion object {
+		private const val SCREEN_KEY = "com.jgarin.viewmodelstaterestore.activity_based.workflow_one.WorkflowOneScreen"
+		private const val INPUT_KEY = "com.jgarin.viewmodelstaterestore.activity_based.workflow_one.Input"
 	}
 
 }
