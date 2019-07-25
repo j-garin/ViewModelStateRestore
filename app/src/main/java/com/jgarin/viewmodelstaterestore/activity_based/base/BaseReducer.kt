@@ -3,6 +3,7 @@ package com.jgarin.viewmodelstaterestore.activity_based.base
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jgarin.viewmodelstaterestore.SingleLiveEvent
+import com.jgarin.viewmodelstaterestore.extensions.distinctUntilChanged
 
 /**
  * @param E event type
@@ -18,9 +19,9 @@ abstract class BaseReducer<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavig
 	private val _navigationScreen = MutableLiveData<NS>().apply { value = initialScreen }
 	private val _navigationWorkflow = MutableLiveData<SingleLiveEvent<NW>>()
 
-	val stateStream: LiveData<WS> = _stateStream
-	val navigationScreen: LiveData<NS> = _navigationScreen
-	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow
+	val stateStream: LiveData<WS> = _stateStream.distinctUntilChanged()
+	val navigationScreen: LiveData<NS> = _navigationScreen.distinctUntilChanged()
+	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow.distinctUntilChanged()
 
 	fun submit(event: E) {
 		synchronized(this) {

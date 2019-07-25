@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import com.jgarin.viewmodelstaterestore.activity_based.base.BaseReducer
 import com.jgarin.viewmodelstaterestore.activity_based.base.BaseViewModel
+import com.jgarin.viewmodelstaterestore.extensions.distinctUntilChanged
 import com.jgarin.viewmodelstaterestore.extensions.map
 
 class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(savedState) {
@@ -31,13 +32,16 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneEvent
 	val screenOne = object : ScreenOne {
 		override val inputText: LiveData<String> = reducer.stateStream
 				.map { workflowState -> if (workflowState.input.isEmpty()) "Value will be displayed here" else workflowState.input }
+				.distinctUntilChanged()
 		override val btnNextEnabled: LiveData<Boolean> = reducer.stateStream
 				.map { workflowState -> workflowState.input.isNotEmpty() }
+				.distinctUntilChanged()
 	}
 
 	val screenTwo = object : ScreenTwo {
 		override val btnOkEnabled: LiveData<Boolean> = reducer.stateStream
 				.map { workflowState -> workflowState.tmpInput.isNotEmpty() }
+				.distinctUntilChanged()
 	}
 
 	interface ScreenOne {
