@@ -13,8 +13,8 @@ abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : 
 	// Not sure about the visibility modifier here. Can you think of a case where you actually need the reference to this viewModel in the activity?
 	protected lateinit var viewModel: BaseViewModel<E, WS, NS, NW>
 
-	override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-		super.onCreate(savedInstanceState, persistentState)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
 
 		setContentView(layout)
 		viewModel = getViewModel(savedInstanceState)
