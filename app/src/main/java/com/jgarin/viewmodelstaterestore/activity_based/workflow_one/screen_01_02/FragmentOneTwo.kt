@@ -1,6 +1,7 @@
 package com.jgarin.viewmodelstaterestore.activity_based.workflow_one.screen_01_02
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProviders
 import com.jgarin.viewmodelstaterestore.R
 import com.jgarin.viewmodelstaterestore.activity_based.base.BaseScreenFragment
@@ -24,9 +25,14 @@ class FragmentOneTwo : BaseScreenFragment() {
 
 		viewModel.screenTwo.btnOkEnabled.observeNonNull(this) { btnOk.isEnabled = it }
 
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
 		etInput.addAfterTextChangedListener { viewModel.inputChanged(it) }
 		btnOk.setOnClickListener { viewModel.saveTmpInput() }
 		btnCancel.setOnClickListener { viewModel.cancelInput() }
+
 	}
 
 }
