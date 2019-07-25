@@ -17,5 +17,8 @@ class WorkflowOneActivity: BaseWorkflowActivity<WorkflowOneState, WorkflowOneScr
 			.get(WorkflowOneViewModel::class.java)
 	}
 
+	override fun handleScreenChange(screen: WorkflowOneScreen) {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
 
 }

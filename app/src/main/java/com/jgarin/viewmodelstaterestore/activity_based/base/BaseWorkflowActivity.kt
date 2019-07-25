@@ -3,6 +3,7 @@ package com.jgarin.viewmodelstaterestore.activity_based.base
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
+import com.jgarin.viewmodelstaterestore.extensions.observeNonNull
 
 typealias LayoutResId = Int
 
@@ -16,6 +17,7 @@ abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationS
 
 		setContentView(layout)
 		viewModel = getViewModel(savedInstanceState)
+		viewModel.navigationStream.observeNonNull(this, ::handleScreenChange)
 	}
 
 	override fun onBackPressed() {
@@ -28,6 +30,8 @@ abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationS
 		super.onSaveInstanceState(outState, outPersistentState)
 	}
 
-	abstract fun getViewModel(savedState: Bundle?): BaseViewModel<WS, NS, E>
+	protected abstract fun getViewModel(savedState: Bundle?): BaseViewModel<WS, NS, E>
+
+	protected abstract fun handleScreenChange(screen: NS)
 
 }
