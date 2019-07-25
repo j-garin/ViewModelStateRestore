@@ -13,12 +13,18 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState
 		outState.putString(INPUT_KEY, reducer.stateStream.value?.input)
 	}
 
+	private val initialState by lazy {
+		WorkflowOneState(
+				input = savedState?.getString(INPUT_KEY) ?: "",
+				tmpInput = savedState?.getString(TMP_INPUT_KEY) ?: ""
+		)
+	}
+
 	override val reducer: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen> by lazy {
-		WorkflowOneReducer(initialScreen = savedState?.getSerializable(SCREEN_KEY)
-				as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
-				initialState = WorkflowOneState(
-						input = savedState?.getString(INPUT_KEY) ?: ""
-				)
+		WorkflowOneReducer(
+				initialScreen = savedState?.getSerializable(SCREEN_KEY)
+						as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
+				initialState = initialState
 		)
 	}
 
@@ -29,9 +35,18 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState
 				.map { workflowState -> workflowState.input.isNotEmpty() }
 	}
 
+	val screenTwo = object : ScreenTwo {
+		override val btnOkEnabled: LiveData<Boolean> = reducer.stateStream
+				.map { workflowState -> workflowState.tmpInput.isNotEmpty() }
+	}
+
 	interface ScreenOne {
 		val inputText: LiveData<String>
 		val btnNextEnabled: LiveData<Boolean>
+	}
+
+	interface ScreenTwo {
+		val btnOkEnabled: LiveData<Boolean>
 	}
 
 	fun next() {
@@ -42,9 +57,22 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneState
 		reducer.submit(WorkflowOneEvent.GoToInput)
 	}
 
+	fun inputChanged(input: String) {
+		reducer.submit(WorkflowOneEvent.InputChanged(input))
+	}
+
+	fun saveTmpInput() {
+		reducer.submit(WorkflowOneEvent.SaveInput)
+	}
+
+	fun cancelInput() {
+		reducer.submit(WorkflowOneEvent.CancelInput)
+	}
+
 	companion object {
 		private const val SCREEN_KEY = "com.jgarin.viewmodelstaterestore.activity_based.workflow_one.WorkflowOneScreen"
 		private const val INPUT_KEY = "com.jgarin.viewmodelstaterestore.activity_based.workflow_one.Input"
+		private const val TMP_INPUT_KEY = "com.jgarin.viewmodelstaterestore.activity_based.workflow_one.TmpInput"
 	}
 
 }

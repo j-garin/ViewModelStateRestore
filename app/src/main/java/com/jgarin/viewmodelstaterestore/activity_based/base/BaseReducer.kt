@@ -27,10 +27,10 @@ abstract class BaseReducer<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavig
 					_navigationStream.value!!
 			)
 			_stateStream.value = newState
-			_navigationStream.value = newScreen
+			newScreen?.let { _navigationStream.value = newScreen }
 		}
 	}
 
-	protected abstract fun reduce(event: E, prev: WS, screen: NS): Pair<WS, NS>
+	protected abstract fun reduce(event: E, prev: WS, screen: NS): Pair<WS, NS?>
 
 }

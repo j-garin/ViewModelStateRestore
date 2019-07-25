@@ -8,7 +8,7 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 	override fun reduce(event: WorkflowOneEvent,
 	                    prev: WorkflowOneState,
 	                    screen: WorkflowOneScreen
-	): Pair<WorkflowOneState, WorkflowOneScreen> {
+	): Pair<WorkflowOneState, WorkflowOneScreen?> {
 		return when (event) {
 			WorkflowOneEvent.GoToNext -> prev to when (screen) {
 				WorkflowOneScreen.ScreenOne -> WorkflowOneScreen.ScreenThree
@@ -16,6 +16,9 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 				WorkflowOneScreen.ScreenThree -> TODO()
 			}
 			WorkflowOneEvent.GoToInput -> prev to WorkflowOneScreen.ScreenTwo
+			is WorkflowOneEvent.InputChanged -> prev.copy(tmpInput = event.input) to null
+			WorkflowOneEvent.SaveInput -> prev.copy(input = prev.tmpInput, tmpInput = "") to WorkflowOneScreen.ScreenOne
+			WorkflowOneEvent.CancelInput -> prev.copy(tmpInput = prev.input) to WorkflowOneScreen.ScreenOne
 		}
 
 	}
