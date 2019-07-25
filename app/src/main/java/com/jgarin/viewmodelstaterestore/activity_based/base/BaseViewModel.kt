@@ -12,13 +12,15 @@ import com.jgarin.viewmodelstaterestore.SingleLiveEvent
  */
 abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow>(savedState: Bundle?) : ViewModel() {
 
-	protected abstract val reducer: BaseReducer<E, WS, NS, NW>
+	protected val reducer: BaseReducer<E, WS, NS, NW> by lazy { buildReducer(savedState) }
 
 	val navigationStream: LiveData<NS>
 		get() = reducer.navigationScreen
 
 	val navigationWorkflow: LiveData<SingleLiveEvent<NW>>
 		get() = reducer.navigationWorkflow
+
+	protected abstract fun buildReducer(savedState: Bundle?): BaseReducer<E, WS, NS, NW>
 
 	abstract fun onSaveViewModelState(outState: Bundle)
 

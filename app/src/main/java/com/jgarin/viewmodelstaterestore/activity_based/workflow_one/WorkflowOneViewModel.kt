@@ -14,18 +14,18 @@ class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<WorkflowOneEvent
 		outState.putString(INPUT_KEY, reducer.stateStream.value?.input)
 	}
 
-	private val initialState by lazy {
-		WorkflowOneState(
+	private fun initialState(savedState: Bundle?): WorkflowOneState {
+		return WorkflowOneState(
 				input = savedState?.getString(INPUT_KEY) ?: "",
 				tmpInput = savedState?.getString(TMP_INPUT_KEY) ?: ""
 		)
 	}
 
-	override val reducer: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> by lazy {
-		WorkflowOneReducer(
+	override fun buildReducer(savedState: Bundle?): BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
+		return WorkflowOneReducer(
 				initialScreen = savedState?.getSerializable(SCREEN_KEY)
 						as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
-				initialState = initialState
+				initialState = initialState(savedState)
 		)
 	}
 
