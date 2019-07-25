@@ -1,7 +1,6 @@
 package com.jgarin.viewmodelstaterestore.activity_based.base
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jgarin.viewmodelstaterestore.extensions.observeNonNull
 
@@ -28,9 +27,9 @@ abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : 
 		viewModel.onBackPressed()
 	}
 
-	override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+	override fun onSaveInstanceState(outState: Bundle?) {
 		outState?.let { viewModel.onSaveViewModelState(outState) }
-		super.onSaveInstanceState(outState, outPersistentState)
+		super.onSaveInstanceState(outState)
 	}
 
 	protected abstract fun getViewModel(savedState: Bundle?): BaseViewModel<E, WS, NS, NW>
