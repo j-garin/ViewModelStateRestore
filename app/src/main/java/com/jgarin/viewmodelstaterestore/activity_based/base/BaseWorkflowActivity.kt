@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 
-typealias ViewId = Int
 typealias LayoutResId = Int
 
 abstract class BaseWorkflowActivity<WS : BaseWorkflowState, NS : BaseNavigationScreen, E : BaseEvent>: AppCompatActivity() {
 
 	protected abstract val layout: LayoutResId
-	protected abstract val fragmentContainer: ViewId
 	private lateinit var viewModel: BaseViewModel<WS, NS, E>
 
 	override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
