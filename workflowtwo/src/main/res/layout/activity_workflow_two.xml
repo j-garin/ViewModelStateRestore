@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_margin="16dp"
+	android:orientation="vertical"
+	>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		android:layout_marginTop="64dp"
+		android:text="Congratulations, you have successfully reached workflow two! Press back to return to the previous workflow.\n\nIf you have the `Don't keep activities` option enabled in your device's developer settings, the activity and viewModel will be re-created using the saved state, which was the goal of this project"
+		android:textSize="20sp"
+		/>
+
+	<Button
+		android:id="@+id/btnBack"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		android:text="go back"
+		/>
+
+</LinearLayout>
