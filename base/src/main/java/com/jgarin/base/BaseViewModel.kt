@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.jgarin.base.wrappers.SingleLiveEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 /**
  * @param E event type
@@ -14,6 +17,8 @@ import com.jgarin.base.wrappers.SingleLiveEvent
 abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow>(/*a hook to restore state*/savedState: Bundle?) : ViewModel() {
 
 	protected val reducer: BaseReducer<E, WS, NS, NW> by lazy { buildReducer(savedState) }
+
+	protected val viewModelScope = CoroutineScope(Dispatchers.Default)
 
 	val navigationStream: LiveData<NS> = reducer.navigationScreen
 
@@ -27,6 +32,10 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	// Back navigation is here
 	abstract fun onBackPressed()
+
+	override fun onCleared() {
+		viewModelScope.cancel()
+	}
 
 }
 

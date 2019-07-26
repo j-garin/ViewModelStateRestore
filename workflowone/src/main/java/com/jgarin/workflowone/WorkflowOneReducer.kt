@@ -1,11 +1,12 @@
 package com.jgarin.workflowone
 
 import com.jgarin.base.BaseReducer
+import kotlinx.coroutines.CoroutineScope
 
-internal class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: WorkflowOneState)
-	: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(initialState, initialScreen) {
+internal class WorkflowOneReducer(scope: CoroutineScope, initialScreen: WorkflowOneScreen, initialState: WorkflowOneState)
+	: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(scope, initialState, initialScreen) {
 
-	override fun buildNewState(event: WorkflowOneEvent,
+	override suspend fun buildNewState(event: WorkflowOneEvent,
 	                           prev: WorkflowOneState,
 	                           screen: WorkflowOneScreen
 	): WorkflowOneState {
@@ -26,7 +27,7 @@ internal class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState
 
 	}
 
-	override fun buildNewScreen(event: WorkflowOneEvent,
+	override suspend fun buildNewScreen(event: WorkflowOneEvent,
 	                            prev: WorkflowOneState,
 	                            screen: WorkflowOneScreen
 	): WorkflowOneScreen {
@@ -52,7 +53,7 @@ internal class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState
 
 	}
 
-	override fun buildNewWorkflow(event: WorkflowOneEvent,
+	override suspend fun buildNewWorkflow(event: WorkflowOneEvent,
 	                              prev: WorkflowOneState,
 	                              screen: WorkflowOneScreen
 	): WorkflowOneWorkflowNavigation? {
