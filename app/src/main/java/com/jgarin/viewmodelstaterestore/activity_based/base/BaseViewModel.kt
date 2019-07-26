@@ -19,13 +19,13 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = reducer.navigationWorkflow
 
-	// restoring state magic happens here
+	// Restoring state magic happens here
 	protected abstract fun buildReducer(savedState: Bundle?): BaseReducer<E, WS, NS, NW>
 
-	// saving state magic is here
+	// Saving state magic is here. Basically we're relying on the framework for this.
 	abstract fun onSaveViewModelState(outState: Bundle)
 
-	// back navigation is here
+	// Back navigation is here
 	abstract fun onBackPressed()
 
 }
