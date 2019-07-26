@@ -1,6 +1,7 @@
 package com.jgarin.viewmodelstaterestore.activity_based.workflow_one
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.jgarin.viewmodelstaterestore.R
@@ -31,16 +32,32 @@ class WorkflowOneActivity : BaseWorkflowActivity<WorkflowOneEvent, WorkflowOneSt
 	}
 
 	override fun handleWorkFlowChange(navigationEvent: WorkflowOneWorkflowNavigation) {
+		// the cool thing about this is that this activity doesn't even know where it's going. for any scenario
 		when (navigationEvent) {
 			WorkflowOneWorkflowNavigation.Back           -> finish()
 			is WorkflowOneWorkflowNavigation.WorkflowTwo -> startActivity(navigationEvent.getLaunchIntent(this))
 		}
 	}
 
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+
+		// added this for testing purposes
+		supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		return when (item?.itemId) {
+			android.R.id.home -> onBackPressed().let { true } //just redirect the back press to the activity as you normally would
+			else              -> super.onOptionsItemSelected(item)
+		}
+	}
+
 	private fun replaceFragment(newFragment: Fragment) {
 		supportFragmentManager
 				.beginTransaction()
-				.replace(R.id.fragmentContainer, newFragment)
+				.replace(R.id.fragmentContainer, newFragment) // no backstack required. we handle everything on our own
 				.commit()
 	}
 
