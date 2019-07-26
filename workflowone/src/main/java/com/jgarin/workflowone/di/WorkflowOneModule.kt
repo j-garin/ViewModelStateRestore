@@ -2,12 +2,30 @@ package com.jgarin.workflowone.di
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
+import com.jgarin.extensions.viewModelFactory
 import com.jgarin.workflowone.WorkflowOneActivity
+import com.jgarin.workflowone.WorkflowOneViewModel
 
 class WorkflowOneModule private constructor() {
 
 	fun startWorkflowOne(context: Context) {
 		context.startActivity(Intent(context, WorkflowOneActivity::class.java))
+	}
+
+	internal fun createViewModel(
+		activity: WorkflowOneActivity,
+		savedState: Bundle?
+	): WorkflowOneViewModel {
+		return ViewModelProviders.of(activity,
+			viewModelFactory { WorkflowOneViewModel(savedState) })
+			.get(WorkflowOneViewModel::class.java)
+	}
+
+	internal fun getViewModel(activity: FragmentActivity): WorkflowOneViewModel {
+		return ViewModelProviders.of(activity).get(WorkflowOneViewModel::class.java)
 	}
 
 	companion object {

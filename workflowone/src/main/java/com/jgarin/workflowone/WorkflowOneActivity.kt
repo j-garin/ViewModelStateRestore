@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.jgarin.base.BaseViewModel
 import com.jgarin.base.BaseWorkflowActivity
 import com.jgarin.base.LayoutResId
+import com.jgarin.workflowone.di.WorkflowOneModule
 import com.jgarin.workflowone.screen_01_01.FragmentOneOne
 import com.jgarin.workflowone.screen_01_02.FragmentOneTwo
 import com.jgarin.workflowone.screen_01_03.FragmentOneThree
@@ -16,10 +18,8 @@ internal class WorkflowOneActivity :
 	override val layout: LayoutResId = R.layout.fragment_container
 
 	// This MUST be called first to create the viewModel with all the data required. Later on should be moved to DI.
-	override fun getViewModel(savedState: Bundle?): com.jgarin.base.BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
-		return ViewModelProviders.of(this,
-			com.jgarin.extensions.viewModelFactory { WorkflowOneViewModel(savedState) })
-			.get(WorkflowOneViewModel::class.java)
+	override fun getViewModel(savedState: Bundle?): BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
+		return WorkflowOneModule.instance.createViewModel(this, savedState)
 	}
 
 	override fun handleScreenChange(screen: WorkflowOneScreen) {

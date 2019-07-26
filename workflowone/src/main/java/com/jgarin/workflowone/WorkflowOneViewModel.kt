@@ -2,6 +2,7 @@ package com.jgarin.workflowone
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
+import com.jgarin.base.BaseReducer
 import com.jgarin.base.BaseViewModel
 import com.jgarin.extensions.distinctUntilChanged
 import com.jgarin.extensions.map
@@ -20,7 +21,7 @@ internal class WorkflowOneViewModel(savedState: Bundle?) : BaseViewModel<Workflo
 		)
 	}
 
-	override fun buildReducer(savedState: Bundle?): com.jgarin.base.BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
+	override fun buildReducer(savedState: Bundle?): BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
 		return WorkflowOneReducer(
 				initialScreen = savedState?.getSerializable(SCREEN_KEY)
 						as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
