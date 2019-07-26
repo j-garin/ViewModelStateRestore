@@ -7,8 +7,8 @@ import com.jgarin.base.BaseViewModel
 import com.jgarin.extensions.distinctUntilChanged
 import com.jgarin.extensions.map
 
-internal class WorkflowOneViewModel(savedState: Bundle?) :
-	BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(
+internal class WorkflowViewModel(savedState: Bundle?) :
+	BaseViewModel<Event, State, Screen, WorkflowNavigation>(
 		savedState
 	) {
 
@@ -17,18 +17,18 @@ internal class WorkflowOneViewModel(savedState: Bundle?) :
 		outState.putString(INPUT_KEY, reducer.stateStream.value?.input)
 	}
 
-	private fun initialState(savedState: Bundle?): WorkflowOneState {
-		return WorkflowOneState(
+	private fun initialState(savedState: Bundle?): State {
+		return State(
 			input = savedState?.getString(INPUT_KEY) ?: "",
 			tmpInput = savedState?.getString(TMP_INPUT_KEY) ?: ""
 		)
 	}
 
-	override fun buildReducer(savedState: Bundle?): BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
-		return WorkflowOneReducer(
+	override fun buildReducer(savedState: Bundle?): BaseReducer<Event, State, Screen, WorkflowNavigation> {
+		return Reducer(
 			scope = viewModelScope,
 			initialScreen = savedState?.getSerializable(SCREEN_KEY)
-					as? WorkflowOneScreen ?: WorkflowOneScreen.ScreenOne,
+					as? Screen ?: Screen.Overview,
 			initialState = initialState(savedState)
 		)
 	}
@@ -58,32 +58,32 @@ internal class WorkflowOneViewModel(savedState: Bundle?) :
 	}
 
 	override fun onBackPressed() {
-		reducer.submit(WorkflowOneEvent.OnBackPressed)
+		reducer.submit(Event.OnBackPressed)
 	}
 
 	fun next() {
-		reducer.submit(WorkflowOneEvent.GoToNext)
+		reducer.submit(Event.GoToNext)
 	}
 
 	fun goToInput() {
-		reducer.submit(WorkflowOneEvent.GoToInput)
+		reducer.submit(Event.GoToInput)
 	}
 
 	fun inputChanged(input: String) {
-		reducer.submit(WorkflowOneEvent.InputChanged(input))
+		reducer.submit(Event.InputChanged(input))
 	}
 
 	fun saveTmpInput() {
-		reducer.submit(WorkflowOneEvent.SaveInput)
+		reducer.submit(Event.SaveInput)
 	}
 
 	fun cancelInput() {
-		reducer.submit(WorkflowOneEvent.CancelInput)
+		reducer.submit(Event.CancelInput)
 	}
 
 	companion object {
 		private const val SCREEN_KEY =
-			"com.jgarin.viewmodelstaterestore.activity_based.workflow_one.WorkflowOneScreen"
+			"com.jgarin.viewmodelstaterestore.activity_based.workflow_one.Screen"
 		private const val INPUT_KEY =
 			"com.jgarin.viewmodelstaterestore.activity_based.workflow_one.Input"
 		private const val TMP_INPUT_KEY =

@@ -6,26 +6,26 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.jgarin.extensions.viewModelFactory
-import com.jgarin.workflowone.WorkflowOneActivity
-import com.jgarin.workflowone.WorkflowOneViewModel
+import com.jgarin.workflowone.WorkflowActivity
+import com.jgarin.workflowone.WorkflowViewModel
 
 class WorkflowOneModule private constructor() {
 
 	fun startWorkflowOne(context: Context) {
-		context.startActivity(Intent(context, WorkflowOneActivity::class.java))
+		context.startActivity(Intent(context, WorkflowActivity::class.java))
 	}
 
 	internal fun createViewModel(
-		activity: WorkflowOneActivity,
+		activity: WorkflowActivity,
 		savedState: Bundle?
-	): WorkflowOneViewModel {
+	): WorkflowViewModel {
 		return ViewModelProviders.of(activity,
-			viewModelFactory { WorkflowOneViewModel(savedState) })
-			.get(WorkflowOneViewModel::class.java)
+			viewModelFactory { WorkflowViewModel(savedState) })
+			.get(WorkflowViewModel::class.java)
 	}
 
-	internal fun getViewModel(activity: FragmentActivity): WorkflowOneViewModel {
-		return ViewModelProviders.of(activity).get(WorkflowOneViewModel::class.java)
+	internal fun getViewModel(activity: FragmentActivity): WorkflowViewModel {
+		return ViewModelProviders.of(activity).get(WorkflowViewModel::class.java)
 	}
 
 	companion object {

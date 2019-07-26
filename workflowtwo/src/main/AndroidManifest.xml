@@ -4,6 +4,6 @@
 	>
 
 	<application>
-		<activity android:name=".WorkflowTwoActivity" />
+		<activity android:name=".WorkflowActivity" />
 	</application>
 </manifest>

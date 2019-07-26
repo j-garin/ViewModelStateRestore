@@ -3,43 +3,42 @@ package com.jgarin.workflowone
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.jgarin.base.BaseViewModel
 import com.jgarin.base.BaseWorkflowActivity
 import com.jgarin.base.LayoutResId
 import com.jgarin.workflowone.di.WorkflowOneModule
-import com.jgarin.workflowone.screen_01_01.FragmentOneOne
-import com.jgarin.workflowone.screen_01_02.FragmentOneTwo
-import com.jgarin.workflowone.screen_01_03.FragmentOneThree
+import com.jgarin.workflowone.overview.FragmentOverview
+import com.jgarin.workflowone.input.FragmentInput
+import com.jgarin.workflowone.summary.FragmentSummary
 
-internal class WorkflowOneActivity :
-	BaseWorkflowActivity<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>() {
+internal class WorkflowActivity :
+	BaseWorkflowActivity<Event, State, Screen, WorkflowNavigation>() {
 
 	override val layout: LayoutResId = R.layout.fragment_container
 
 	// This MUST be called first to create the viewModel with all the data required. Later on should be moved to DI.
-	override fun getViewModel(savedState: Bundle?): BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
+	override fun getViewModel(savedState: Bundle?): BaseViewModel<Event, State, Screen, WorkflowNavigation> {
 		return WorkflowOneModule.instance.createViewModel(this, savedState)
 	}
 
-	override fun handleScreenChange(screen: WorkflowOneScreen) {
+	override fun handleScreenChange(screen: Screen) {
 		// Need to find a better way to make sure we don't attach the same fragment again. Open to suggestions.
 		val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
 		when (screen) {
-			WorkflowOneScreen.ScreenOne   -> if (currentFragment !is FragmentOneOne)
-				replaceFragment(FragmentOneOne())
-			WorkflowOneScreen.ScreenTwo   -> if (currentFragment !is FragmentOneTwo)
-				replaceFragment(FragmentOneTwo())
-			WorkflowOneScreen.ScreenThree -> if (currentFragment !is FragmentOneThree)
-				replaceFragment(FragmentOneThree())
+			Screen.Overview -> if (currentFragment !is FragmentOverview)
+				replaceFragment(FragmentOverview())
+			Screen.Input    -> if (currentFragment !is FragmentInput)
+				replaceFragment(FragmentInput())
+			Screen.Summary  -> if (currentFragment !is FragmentSummary)
+				replaceFragment(FragmentSummary())
 		}
 	}
 
-	override fun handleWorkFlowChange(navigationEvent: WorkflowOneWorkflowNavigation) {
+	override fun handleWorkFlowChange(navigationEvent: WorkflowNavigation) {
 		// the cool thing about this is that this activity doesn't even know where it's going. for any scenario
 		when (navigationEvent) {
-			WorkflowOneWorkflowNavigation.Back           -> finish()
-			is WorkflowOneWorkflowNavigation.WorkflowTwo -> navigationEvent.start(this)
+			WorkflowNavigation.Back           -> finish()
+			is WorkflowNavigation.WorkflowTwo -> navigationEvent.start(this)
 		}
 	}
 
