@@ -11,8 +11,8 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 	): WorkflowOneState {
 
 		return when (event) {
-			WorkflowOneEvent.GoToNext        -> prev
-			WorkflowOneEvent.GoToInput       -> prev
+			WorkflowOneEvent.GoToNext        -> prev // Navigation event. The state doesn't change
+			WorkflowOneEvent.GoToInput       -> prev // Navigation event. The state doesn't change
 			is WorkflowOneEvent.InputChanged -> prev.copy(tmpInput = event.input)
 			WorkflowOneEvent.SaveInput       -> prev.copy(input = prev.tmpInput, tmpInput = "")
 			WorkflowOneEvent.CancelInput     -> prev.copy(tmpInput = prev.input)
@@ -39,12 +39,12 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 			}
 
 			WorkflowOneEvent.GoToInput       -> WorkflowOneScreen.ScreenTwo
-			is WorkflowOneEvent.InputChanged -> screen
+			is WorkflowOneEvent.InputChanged -> screen // Stay on the same screen
 			WorkflowOneEvent.SaveInput,
 			WorkflowOneEvent.CancelInput     -> WorkflowOneScreen.ScreenOne
 
 			WorkflowOneEvent.OnBackPressed   -> when (screen) {
-				WorkflowOneScreen.ScreenOne   -> screen
+				WorkflowOneScreen.ScreenOne   -> screen // There's nothing before screen one
 				WorkflowOneScreen.ScreenTwo,
 				WorkflowOneScreen.ScreenThree -> WorkflowOneScreen.ScreenOne
 			}
@@ -58,24 +58,21 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 	): WorkflowOneWorkflowNavigation? {
 
 		return when (event) {
-			WorkflowOneEvent.GoToNext      ->
+			WorkflowOneEvent.GoToNext      -> // Go to the next workflow from screen three
 				if (screen == WorkflowOneScreen.ScreenThree) {
 					WorkflowOneWorkflowNavigation.WorkflowTwo
 				} else {
 					null
 				}
 
-			WorkflowOneEvent.GoToInput,
-			is WorkflowOneEvent.InputChanged,
-			WorkflowOneEvent.SaveInput,
-			WorkflowOneEvent.CancelInput   -> null
-
-			WorkflowOneEvent.OnBackPressed ->
+			WorkflowOneEvent.OnBackPressed -> // Go back from screen one
 				if (screen == WorkflowOneScreen.ScreenOne) {
 					WorkflowOneWorkflowNavigation.Back
 				} else {
 					null
 				}
+
+			else                           -> null // Do nothing otherwise
 		}
 
 	}
