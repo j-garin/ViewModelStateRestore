@@ -5,9 +5,9 @@ import com.jgarin.viewmodelstaterestore.activity_based.base.BaseReducer
 class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: WorkflowOneState)
 	: BaseReducer<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation>(initialState, initialScreen) {
 
-	override fun generateNewState(event: WorkflowOneEvent,
-	                              prev: WorkflowOneState,
-	                              screen: WorkflowOneScreen
+	override fun buildNewState(event: WorkflowOneEvent,
+	                           prev: WorkflowOneState,
+	                           screen: WorkflowOneScreen
 	): WorkflowOneState {
 
 		return when (event) {
@@ -26,9 +26,9 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 
 	}
 
-	override fun generateNewScreen(event: WorkflowOneEvent,
-	                               prev: WorkflowOneState,
-	                               screen: WorkflowOneScreen
+	override fun buildNewScreen(event: WorkflowOneEvent,
+	                            prev: WorkflowOneState,
+	                            screen: WorkflowOneScreen
 	): WorkflowOneScreen {
 
 		return when (event) {
@@ -52,9 +52,9 @@ class WorkflowOneReducer(initialScreen: WorkflowOneScreen, initialState: Workflo
 
 	}
 
-	override fun generateNewWorkflow(event: WorkflowOneEvent,
-	                                 prev: WorkflowOneState,
-	                                 screen: WorkflowOneScreen
+	override fun buildNewWorkflow(event: WorkflowOneEvent,
+	                              prev: WorkflowOneState,
+	                              screen: WorkflowOneScreen
 	): WorkflowOneWorkflowNavigation? {
 
 		return when (event) {

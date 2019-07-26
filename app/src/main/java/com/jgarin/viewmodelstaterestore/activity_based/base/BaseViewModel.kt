@@ -10,20 +10,22 @@ import com.jgarin.viewmodelstaterestore.SingleLiveEvent
  * @param WS workflow state type
  * @param NS navigation screen type
  */
-abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow>(savedState: Bundle?) : ViewModel() {
+// I don't like having so many generic type parameters. We need to check if there's a way to reduce it
+abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow>(/*a hook to restore state*/savedState: Bundle?) : ViewModel() {
 
 	protected val reducer: BaseReducer<E, WS, NS, NW> by lazy { buildReducer(savedState) }
 
-	val navigationStream: LiveData<NS>
-		get() = reducer.navigationScreen
+	val navigationStream: LiveData<NS> = reducer.navigationScreen
 
-	val navigationWorkflow: LiveData<SingleLiveEvent<NW>>
-		get() = reducer.navigationWorkflow
+	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = reducer.navigationWorkflow
 
+	// restoring state magic happens here
 	protected abstract fun buildReducer(savedState: Bundle?): BaseReducer<E, WS, NS, NW>
 
+	// saving state magic is here
 	abstract fun onSaveViewModelState(outState: Bundle)
 
+	// back navigation is here
 	abstract fun onBackPressed()
 
 }

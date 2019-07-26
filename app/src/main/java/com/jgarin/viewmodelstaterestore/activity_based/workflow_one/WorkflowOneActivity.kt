@@ -17,12 +17,14 @@ class WorkflowOneActivity : BaseWorkflowActivity<WorkflowOneEvent, WorkflowOneSt
 
 	override val layout: LayoutResId = R.layout.fragment_container
 
+	// This MUST be called first to create the viewModel with all the data required. Later on should be moved to DI.
 	override fun getViewModel(savedState: Bundle?): BaseViewModel<WorkflowOneEvent, WorkflowOneState, WorkflowOneScreen, WorkflowOneWorkflowNavigation> {
 		return ViewModelProviders.of(this, viewModelFactory { WorkflowOneViewModel(savedState) })
 				.get(WorkflowOneViewModel::class.java)
 	}
 
 	override fun handleScreenChange(screen: WorkflowOneScreen) {
+		// Need to find a better way to make sure we don't attach the same fragment again. Open to suggestions.
 		val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
 		when (screen) {
 			WorkflowOneScreen.ScreenOne   -> if (currentFragment !is FragmentOneOne) replaceFragment(FragmentOneOne())
@@ -49,7 +51,7 @@ class WorkflowOneActivity : BaseWorkflowActivity<WorkflowOneEvent, WorkflowOneSt
 
 	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 		return when (item?.itemId) {
-			android.R.id.home -> onBackPressed().let { true } //just redirect the back press to the activity as you normally would
+			android.R.id.home -> onBackPressed().let { true } // just redirect the back press to the activity as you normally would and our state machine will do the rest
 			else              -> super.onOptionsItemSelected(item)
 		}
 	}

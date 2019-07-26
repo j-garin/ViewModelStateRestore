@@ -10,6 +10,8 @@ sealed class WorkflowOneWorkflowNavigation : BaseNavigationWorkflow {
 	object Back : WorkflowOneWorkflowNavigation()
 
 	object WorkflowTwo : WorkflowOneWorkflowNavigation() {
+		// This could be replaced with context.launch.
+		// Left it this way for now so that the caller can add its own flags if needed
 		fun getLaunchIntent(context: Context): Intent {
 			return Intent(context, WorkflowTwoActivity::class.java)
 		}

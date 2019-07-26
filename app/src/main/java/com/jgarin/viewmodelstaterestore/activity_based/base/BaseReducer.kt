@@ -11,8 +11,8 @@ import com.jgarin.viewmodelstaterestore.extensions.distinctUntilChanged
  * @param NS navigation screen type
  */
 abstract class BaseReducer<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow>(
-		private val initialState: WS,
-		private val initialScreen: NS
+		initialState: WS,
+		initialScreen: NS
 ) {
 
 	private val _stateStream = MutableLiveData<WS>().apply { value = initialState }
@@ -24,32 +24,30 @@ abstract class BaseReducer<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavig
 	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow.distinctUntilChanged()
 
 	fun submit(event: E) {
+		// I want to find a way to put this into a coroutine to make all the calculations happen on a background thread and to get rid of this synchronized function
 		synchronized(this) {
-			val newState = generateNewState(
-					event,
-					_stateStream.value!!,
-					_navigationScreen.value!!
-			)
-			val newScreen = generateNewScreen(
-					event,
-					_stateStream.value!!,
-					_navigationScreen.value!!
-			)
-			val newWorkflow = generateNewWorkflow(
-					event,
-					_stateStream.value!!,
-					_navigationScreen.value!!
-			)
+			val prev = requireNotNull(_stateStream.value) // I know it throws for nulls, but there're no nulls here unless you make changes to this file.
+			val screen = requireNotNull(_navigationScreen.value)
+
+			// I know these can be inlined. Left it this way for coroutines.
+			val newState = buildNewState(event, prev, screen)
+			val newScreen = buildNewScreen(event, prev, screen)
+			val newWorkflow = buildNewWorkflow(event, prev, screen)
+
 			_stateStream.value = newState
 			_navigationScreen.value = newScreen
 			_navigationWorkflow.value = newWorkflow?.let { SingleLiveEvent(it) }
 		}
 	}
 
-	protected abstract fun generateNewState(event: E, prev: WS, screen: NS): WS
+	// I've split one `reduce` method into three. I think it simplifies things a lot on the implementation end
 
-	protected abstract fun generateNewScreen(event: E, prev: WS, screen: NS): NS
+	protected abstract fun buildNewState(event: E, prev: WS, screen: NS): WS
 
-	protected abstract fun generateNewWorkflow(event: E, prev: WS, screen: NS): NW?
+	// Hate the naming here. Any suggestions?
+	protected abstract fun buildNewScreen(event: E, prev: WS, screen: NS): NS
+
+	// Hate the naming here. Any suggestions?
+	protected abstract fun buildNewWorkflow(event: E, prev: WS, screen: NS): NW?
 
 }
