@@ -2,19 +2,30 @@ package com.jgarin.viewmodelstaterestore
 
 import android.app.Application
 import android.content.Context
+import com.jgarin.base.App
+import com.jgarin.login.LoginModule
+import com.jgarin.repository.RepositoryModule
+import com.jgarin.validators.ValidatorsModule
 import com.jgarin.workflowone.di.WorkflowOneModule
 import com.jgarin.workflowtwo.di.WorkflowTwoModule
 
-class JgarinApplication : Application(), com.jgarin.base.App {
+class JgarinApplication : Application(), App {
 
-	private lateinit var workflowOneModule: WorkflowOneModule
-	private lateinit var workflowTwoModule: WorkflowTwoModule
+	private val validatorsModule by lazy { ValidatorsModule.init() }
+	private val repositoryModule by lazy { RepositoryModule.init() }
+	private val loginWorkflowModule by lazy {
+		LoginModule.init(
+			emailValidator = validatorsModule.emailValidator,
+			passwordValidator = validatorsModule.passwordValidator,
+			loginRepository = repositoryModule.loginRepo
+		)
+	}
 
-	override fun onCreate() {
-		super.onCreate()
+	private val workflowOneModule by lazy { WorkflowOneModule.init(this) }
+	private val workflowTwoModule by lazy { WorkflowTwoModule.init() }
 
-		workflowOneModule = WorkflowOneModule.init(this)
-		workflowTwoModule = WorkflowTwoModule.instance
+	override fun startLoginWorkflow(context: Context) {
+		loginWorkflowModule.startWorkflow(context)
 	}
 
 	override fun startWorkflowOne(context: Context) {
@@ -24,5 +35,6 @@ class JgarinApplication : Application(), com.jgarin.base.App {
 	override fun startWorkflowTwo(context: Context) {
 		workflowTwoModule.startWorkflowTwo(context)
 	}
+
 
 }

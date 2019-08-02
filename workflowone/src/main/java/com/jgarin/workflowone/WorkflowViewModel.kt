@@ -2,8 +2,8 @@ package com.jgarin.workflowone
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
-import com.jgarin.base.BaseReducer
-import com.jgarin.base.BaseViewModel
+import com.jgarin.base.ui.BaseReducer
+import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.extensions.distinctUntilChanged
 import com.jgarin.extensions.map
 

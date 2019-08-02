@@ -1,4 +1,4 @@
-package com.jgarin.base
+package com.jgarin.base.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -2,14 +2,15 @@ package com.jgarin.workflowone.input
 
 import android.os.Bundle
 import android.view.View
-import com.jgarin.base.LayoutResId
+import com.jgarin.base.ui.BaseScreenFragment
+import com.jgarin.base.ui.LayoutResId
 import com.jgarin.extensions.addAfterTextChangedListener
 import com.jgarin.extensions.observeNonNull
 import com.jgarin.workflowone.R
 import com.jgarin.workflowone.di.WorkflowOneModule
 import kotlinx.android.synthetic.main.fragment_input.*
 
-internal class FragmentInput : com.jgarin.base.BaseScreenFragment() {
+internal class FragmentInput : BaseScreenFragment() {
 
 	override val layout: LayoutResId = R.layout.fragment_input
 

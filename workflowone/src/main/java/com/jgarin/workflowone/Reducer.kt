@@ -1,6 +1,6 @@
 package com.jgarin.workflowone
 
-import com.jgarin.base.BaseReducer
+import com.jgarin.base.ui.BaseReducer
 import kotlinx.coroutines.CoroutineScope
 
 internal class Reducer(scope: CoroutineScope, initialScreen: Screen, initialState: State)

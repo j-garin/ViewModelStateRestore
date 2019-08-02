@@ -35,4 +35,7 @@ dependencies {
     implementation project(path: ':workflowtwo')
     implementation project(path: ':workflowone')
     implementation project(path: ':base')
+    implementation project(path: ':validators')
+    implementation project(path: ':login')
+    implementation project(path: ':repository')
 }

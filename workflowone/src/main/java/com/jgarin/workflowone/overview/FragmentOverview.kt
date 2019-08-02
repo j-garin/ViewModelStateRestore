@@ -2,14 +2,16 @@ package com.jgarin.workflowone.overview
 
 import android.os.Bundle
 import android.view.View
+import com.jgarin.base.ui.BaseScreenFragment
+import com.jgarin.base.ui.LayoutResId
 import com.jgarin.extensions.observeNonNull
 import com.jgarin.workflowone.R
 import com.jgarin.workflowone.di.WorkflowOneModule
 import kotlinx.android.synthetic.main.fragment_01_01.*
 
-internal class FragmentOverview : com.jgarin.base.BaseScreenFragment() {
+internal class FragmentOverview : BaseScreenFragment() {
 
-	override val layout: com.jgarin.base.LayoutResId = R.layout.fragment_01_01
+	override val layout: LayoutResId = R.layout.fragment_01_01
 
 	private val viewModel by lazy {
 		WorkflowOneModule.instance.getViewModel(requireActivity())

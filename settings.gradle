@@ -1,1 +1,1 @@
-include ':app', ':base', ':extensions', ':workflowone', ':workflowtwo'
+include ':app', ':base', ':extensions', ':workflowone', ':workflowtwo', ':login', ':validators', ':repository'

@@ -11,7 +11,9 @@ class WorkflowTwoModule private constructor(){
 	}
 
 	companion object {
-		val instance = WorkflowTwoModule()
+		private val instance by lazy { WorkflowTwoModule()}
+
+		fun init() = instance
 	}
 
 }

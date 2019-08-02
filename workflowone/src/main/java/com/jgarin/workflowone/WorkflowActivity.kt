@@ -3,9 +3,9 @@ package com.jgarin.workflowone
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
-import com.jgarin.base.BaseViewModel
-import com.jgarin.base.BaseWorkflowActivity
-import com.jgarin.base.LayoutResId
+import com.jgarin.base.ui.BaseViewModel
+import com.jgarin.base.ui.BaseWorkflowActivity
+import com.jgarin.base.ui.LayoutResId
 import com.jgarin.workflowone.di.WorkflowOneModule
 import com.jgarin.workflowone.overview.FragmentOverview
 import com.jgarin.workflowone.input.FragmentInput

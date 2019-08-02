@@ -2,8 +2,9 @@ package com.jgarin.workflowone
 
 import android.content.Context
 import com.jgarin.base.App
+import com.jgarin.base.ui.BaseNavigationWorkflow
 
-internal sealed class WorkflowNavigation : com.jgarin.base.BaseNavigationWorkflow {
+internal sealed class WorkflowNavigation : BaseNavigationWorkflow {
 
 	object Back : WorkflowNavigation()
 

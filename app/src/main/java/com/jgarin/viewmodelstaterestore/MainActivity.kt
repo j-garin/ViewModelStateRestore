@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 		setContentView(R.layout.activity_main)
 
 		btnActivityBased.setOnClickListener {
-			app.startWorkflowOne(this)
+			app.startLoginWorkflow(this)
 		}
 	}
 }

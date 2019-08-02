@@ -1,4 +1,4 @@
-package com.jgarin.base
+package com.jgarin.base.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
