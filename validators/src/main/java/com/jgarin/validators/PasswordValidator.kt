@@ -8,6 +8,8 @@ internal class PasswordValidator : Validator<String> {
 		return when {
 			value.isBlank()                  -> Validator.ValidationResult
 				.Failure(EmptyPassword)
+			value.length < 6 -> Validator.ValidationResult
+				.Failure(ShortPassword)
 			 !value.contains(lowercaseRegex) -> Validator.ValidationResult
 				 .Failure(NotContainsLowercase)
 			 !value.contains(uppercaseRegex) -> Validator.ValidationResult
@@ -25,6 +27,7 @@ internal class PasswordValidator : Validator<String> {
 		private val lowercaseRegex = "[a-z]".toRegex()
 
 		private const val EmptyPassword = "Password is empty"
+		private const val ShortPassword = "Password is short"
 		private const val NotContainsLowercase = "Password doesn't contain a lowercase symbol"
 		private const val NotContainsUppercase = "Password doesn't contain an uppercase symbol"
 		private const val NotContainsNumber = "Password doesn't contain a number"
