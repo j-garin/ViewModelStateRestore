@@ -6,6 +6,9 @@ import com.jgarin.base.ui.BaseReducer
 import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.base.validators.Validator
 import com.jgarin.base.wrappers.Response
+import com.jgarin.login.email.EmailInputScreen
+import com.jgarin.login.loading.LoadingScreen
+import com.jgarin.login.password.PasswordInputScreen
 import kotlinx.coroutines.launch
 
 internal class WorkflowViewModel(
@@ -34,7 +37,7 @@ internal class WorkflowViewModel(
 			loginError = null
 		)
 
-		val initialScreen = savedState?.getParcelable(ScreenKey) as? Screen ?: Screen.EmailInput
+		val initialScreen = savedState?.getSerializable(ScreenKey) as? Screen ?: Screen.EmailInput
 
 		return Reducer(
 			viewModelScope,
@@ -66,6 +69,12 @@ internal class WorkflowViewModel(
 	override fun onBackPressed() {
 		reducer.submit(Event.BackPressed)
 	}
+
+	val emailInputScreen = EmailInputScreen(reducer.stateStream)
+
+	val passwordInputScreen = PasswordInputScreen(reducer.stateStream)
+
+	val loadingScreen = LoadingScreen(reducer.stateStream)
 
 	fun emailEntered(email: String) {
 		reducer.submit(Event.EmailInputChanged(email))
