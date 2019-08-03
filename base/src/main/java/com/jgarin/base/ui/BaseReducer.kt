@@ -38,7 +38,7 @@ abstract class BaseReducer<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavig
 
 				awaitAll(newState, newScreen, newWorkflow)
 
-				launch(context = Dispatchers.Main) {
+				withContext(context = Dispatchers.Main) {
 					_stateStream.value = newState.await()
 					_navigationScreen.value = newScreen.await()
 					_navigationWorkflow.value = newWorkflow.await()?.let { SingleLiveEvent(it) }
