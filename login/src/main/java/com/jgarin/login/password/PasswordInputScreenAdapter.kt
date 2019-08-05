@@ -10,6 +10,7 @@ internal class PasswordInputScreenAdapter(stateStream: LiveData<State>) :
 
 	override fun map(workflowState: State): PasswordInputScreenState {
 		return PasswordInputScreenState(
+			password = workflowState.password,
 			passwordError = (workflowState.passValid as? Validator.ValidationResult.Failure)?.reason,
 			loginBtnEnabled = workflowState.password.isNotBlank() && workflowState.passValid is Validator.ValidationResult.OK
 		)
