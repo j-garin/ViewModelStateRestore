@@ -19,19 +19,20 @@ internal class EmailInputFragment : BaseScreenFragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		viewModel.emailInputScreen.emailError.observeNonNull(this) { etEmail.error = it }
-		viewModel.emailInputScreen.nextBtnEnabled.observeNonNull(this) { btnNext.isEnabled = it }
-
+		viewModel.emailInputScreen.screenState.observeNonNull(this, ::renderState)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-		etEmail.setText(viewModel.emailInputScreen.email.value)
+		etEmail.setText(viewModel.emailInputScreen.screenState.value?.email)
 
 		etEmail.addAfterTextChangedListener { viewModel.emailEntered(it) }
 
 		btnNext.setOnClickListener { viewModel.onEmailScreenNextButtonClicked() }
+	}
 
+	private fun renderState(state: EmailInputState) {
+		btnNext.isEnabled = state.nextBtnEnabled
+		etEmail.error = state.emailError
 	}
 
 }

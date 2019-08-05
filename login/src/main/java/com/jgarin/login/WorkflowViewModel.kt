@@ -6,9 +6,10 @@ import com.jgarin.base.ui.BaseReducer
 import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.base.validators.Validator
 import com.jgarin.base.wrappers.Response
-import com.jgarin.login.email.EmailInputScreen
-import com.jgarin.login.loading.LoadingScreen
-import com.jgarin.login.password.PasswordInputScreen
+import com.jgarin.login.email.EmailInputScreenAdapter
+import com.jgarin.login.loading.LoadingScreenAdapter
+import com.jgarin.login.password.PasswordInputScreenAdapter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 internal class WorkflowViewModel(
@@ -70,11 +71,11 @@ internal class WorkflowViewModel(
 		reducer.submit(Event.BackPressed)
 	}
 
-	val emailInputScreen = EmailInputScreen(reducer.stateStream)
+	val emailInputScreen = EmailInputScreenAdapter(reducer.stateStream)
 
-	val passwordInputScreen = PasswordInputScreen(reducer.stateStream)
+	val passwordInputScreen = PasswordInputScreenAdapter(reducer.stateStream)
 
-	val loadingScreen = LoadingScreen(reducer.stateStream)
+	val loadingScreen = LoadingScreenAdapter(reducer.stateStream)
 
 	fun emailEntered(email: String) {
 		reducer.submit(Event.EmailInputChanged(email))
@@ -82,7 +83,7 @@ internal class WorkflowViewModel(
 		// this is a fast operation. I've put it into a coroutine demonstration purposes
 		viewModelScope.launch {
 			val validationResult = emailValidator.validate(email)
-			reducer.submit(Event.EmailValidated(validationResult))
+			launch(Dispatchers.Main) { reducer.submit(Event.EmailValidated(validationResult)) }
 		}
 	}
 
@@ -92,7 +93,7 @@ internal class WorkflowViewModel(
 		// this is a fast operation. I've put it into a coroutine demonstration purposes
 		viewModelScope.launch {
 			val validationResult = passwordValidator.validate(password)
-			reducer.submit(Event.PasswordValidated(validationResult))
+			launch(Dispatchers.Main) { reducer.submit(Event.PasswordValidated(validationResult)) }
 		}
 	}
 
@@ -101,16 +102,18 @@ internal class WorkflowViewModel(
 	}
 
 	fun onPasswordScreenLoginButtonClicked() {
-		val emal = reducer.stateStream.value?.email ?: return
+		val email = reducer.stateStream.value?.email ?: return
 		val password = reducer.stateStream.value?.password ?: return
 
 		reducer.submit(Event.Login)
 
 		viewModelScope.launch {
-			val result = loginRepository.login(emal, password)
-			when (result) {
-				is Response.Success -> reducer.submit(Event.LoginSuccess)
-				is Response.Error   -> reducer.submit(Event.LoginError(result.cause))
+			val result = loginRepository.login(email, password)
+			launch(Dispatchers.Main) {
+				when (result) {
+					is Response.Success -> reducer.submit(Event.LoginSuccess)
+					is Response.Error   -> reducer.submit(Event.LoginError(result.cause))
+				}
 			}
 		}
 	}

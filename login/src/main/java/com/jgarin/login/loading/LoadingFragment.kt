@@ -8,7 +8,7 @@ import com.jgarin.extensions.observeNonNull
 import com.jgarin.login.LoginModule
 import com.jgarin.login.R
 
-internal class LoadingFragment: BaseScreenFragment() {
+internal class LoadingFragment : BaseScreenFragment() {
 
 	private val viewModel by lazy { LoginModule.instance.getViewModel(requireActivity()) }
 
@@ -17,10 +17,13 @@ internal class LoadingFragment: BaseScreenFragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		viewModel.loadingScreen.loginError.observeNonNull(this) {
-			Toast.makeText(requireContext(), it.value, Toast.LENGTH_SHORT).show()
-		}
+		viewModel.loadingScreen.screenState.observeNonNull(this, ::renderState)
+	}
 
+	private fun renderState(state: LoadingScreenState) {
+		state.loginError?.value?.let { errorMessage ->
+			Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+		}
 	}
 
 }

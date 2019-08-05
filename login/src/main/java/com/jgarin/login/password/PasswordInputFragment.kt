@@ -19,10 +19,7 @@ internal class PasswordInputFragment : BaseScreenFragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		viewModel.passwordInputScreen.passwordError.observeNonNull(this) { etPass.error = it }
-		viewModel.passwordInputScreen.loginBtnEnabled.observeNonNull(this)
-		{ btnLogin.isEnabled = it }
-
+		viewModel.passwordInputScreen.screenState.observeNonNull(this, ::renderState)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,6 +28,11 @@ internal class PasswordInputFragment : BaseScreenFragment() {
 
 		btnLogin.setOnClickListener { viewModel.onPasswordScreenLoginButtonClicked() }
 
+	}
+
+	private fun renderState(state: PasswordInputScreenState) {
+		etPass.error = state.passwordError
+		btnLogin.isEnabled = state.loginBtnEnabled
 	}
 
 }
