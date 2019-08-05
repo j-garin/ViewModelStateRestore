@@ -38,22 +38,23 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	private val _stateStream = MutableLiveData<WS>()
 		.apply { value = readState(savedState) }
-	private val _navigationScreen = MutableLiveData<NS>()
-		.apply { value = readScreen(savedState) }
+	private val _navigationScreen = MutableLiveData<SingleLiveEvent<NS>>()
+		.apply { value = SingleLiveEvent(readScreen(savedState)) }
 	private val _navigationWorkflow = MutableLiveData<SingleLiveEvent<NW>>()
 
 	private val coroutineChannel = Channel<E>()
 
 	val stateStream: LiveData<WS> = _stateStream.distinctUntilChanged()
-	val navigationScreen: LiveData<NS> = _navigationScreen.distinctUntilChanged()
-	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow.distinctUntilChanged()
+	val navigationScreen: LiveData<SingleLiveEvent<NS>> = _navigationScreen.distinctUntilChanged()
+	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> =
+		_navigationWorkflow.distinctUntilChanged()
 
 	init {
 		viewModelScope.launch(Dispatchers.Unconfined) {
 			for (event in coroutineChannel) {
 				// I know it throws for nulls, but there're no nulls here unless you make changes to this file.
 				val prev = requireNotNull(_stateStream.value)
-				val screen = requireNotNull(_navigationScreen.value)
+				val screen = requireNotNull(_navigationScreen.value?.peek())
 
 				// Calculating these in parallel
 				val newStateD = async { reduceState(event, prev, screen) }
@@ -66,7 +67,7 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 				withContext(Dispatchers.Main) {
 					_stateStream.value = newState
-					_navigationScreen.value = newScreen
+					_navigationScreen.value = newScreen?.let { SingleLiveEvent(it) }
 					_navigationWorkflow.value = newWorkflow?.let { SingleLiveEvent(it) }
 				}
 			}
@@ -80,7 +81,7 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	// Saving state magic is here. Basically we're relying on the framework for this.
 	fun onSaveViewModelState(outState: Bundle) {
 		val state = stateStream.value ?: return
-		val screen = navigationScreen.value ?: return
+		val screen = navigationScreen.value?.peek() ?: return
 		saveState(outState, state, screen)
 	}
 

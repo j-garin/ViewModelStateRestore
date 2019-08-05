@@ -2,6 +2,7 @@ package com.jgarin.base.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.jgarin.base.ui.entities.BaseEvent
 import com.jgarin.base.ui.entities.BaseNavigationScreen
 import com.jgarin.base.ui.entities.BaseNavigationWorkflow
@@ -23,7 +24,7 @@ abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : 
 
 		setContentView(layout)
 		viewModel = getViewModel(savedInstanceState)
-		viewModel.navigationScreen.observeNonNull(this, ::handleScreenChange)
+		viewModel.navigationScreen.observe(this, Observer { it?.value?.let(::handleScreenChange) })
 		viewModel.navigationWorkflow.observeNonNull(this) { singleLiveEvent ->
 			singleLiveEvent.value?.let { handleWorkFlowChange(it) } // Unwrap SingleLiveEvent to make sure navigation is only handled once
 			// Perhaps we should use the same approach with navigation inside the workflow?
