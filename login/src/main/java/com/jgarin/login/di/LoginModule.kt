@@ -18,7 +18,9 @@ class LoginModule private constructor(
 ) {
 
 	fun startWorkflow(context: Context) {
-		context.startActivity(Intent(context, WorkflowActivity::class.java))
+		val intent = Intent(context, WorkflowActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+		context.startActivity(intent)
 	}
 
 	internal fun initViewModel(activity: FragmentActivity, savedState: Bundle?): WorkflowViewModel {

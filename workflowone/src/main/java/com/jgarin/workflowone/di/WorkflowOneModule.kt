@@ -12,7 +12,9 @@ import com.jgarin.workflowone.WorkflowViewModel
 class WorkflowOneModule private constructor() {
 
 	fun startWorkflowOne(context: Context) {
-		context.startActivity(Intent(context, WorkflowActivity::class.java))
+		val intent = Intent(context, WorkflowActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+		context.startActivity(intent)
 	}
 
 	internal fun createViewModel(
