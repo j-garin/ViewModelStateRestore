@@ -23,7 +23,7 @@ abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : 
 
 		setContentView(layout)
 		viewModel = getViewModel(savedInstanceState)
-		viewModel.navigationStream.observeNonNull(this, ::handleScreenChange)
+		viewModel.navigationScreen.observeNonNull(this, ::handleScreenChange)
 		viewModel.navigationWorkflow.observeNonNull(this) { singleLiveEvent ->
 			singleLiveEvent.value?.let { handleWorkFlowChange(it) } // Unwrap SingleLiveEvent to make sure navigation is only handled once
 			// Perhaps we should use the same approach with navigation inside the workflow?

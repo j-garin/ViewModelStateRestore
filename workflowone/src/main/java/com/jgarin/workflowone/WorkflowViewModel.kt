@@ -2,48 +2,39 @@ package com.jgarin.workflowone
 
 import android.os.Bundle
 import androidx.lifecycle.LiveData
-import com.jgarin.base.ui.BaseReducer
 import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.extensions.distinctUntilChanged
 import com.jgarin.extensions.map
+import com.jgarin.workflowone.entities.Event
+import com.jgarin.workflowone.entities.Screen
+import com.jgarin.workflowone.entities.State
+import com.jgarin.workflowone.entities.WorkflowNavigation
+import com.jgarin.workflowone.functions.*
 
 internal class WorkflowViewModel(savedState: Bundle?) :
 	BaseViewModel<Event, State, Screen, WorkflowNavigation>(
 		savedState
 	) {
 
-	override fun onSaveViewModelState(outState: Bundle) {
-		outState.putSerializable(SCREEN_KEY, reducer.navigationScreen.value)
-		outState.putString(INPUT_KEY, reducer.stateStream.value?.input)
-	}
+	override val stateReducer: (Event, State, Screen) -> State = ::reduceState
+	override val screenReducer: (Event, State, Screen) -> Screen = ::reduceScreen
+	override val workflowReducer: (Event, State, Screen) -> WorkflowNavigation? = ::reduceWrokflow
 
-	private fun initialState(savedState: Bundle?): State {
-		return State(
-			input = savedState?.getString(INPUT_KEY) ?: "",
-			tmpInput = savedState?.getString(TMP_INPUT_KEY) ?: ""
-		)
-	}
-
-	override fun buildReducer(savedState: Bundle?): BaseReducer<Event, State, Screen, WorkflowNavigation> {
-		return Reducer(
-			scope = viewModelScope,
-			initialScreen = savedState?.getSerializable(SCREEN_KEY)
-					as? Screen ?: Screen.Overview,
-			initialState = initialState(savedState)
-		)
-	}
+	override val stateSaver: (Bundle, State, Screen) -> Unit = ::saveState
+	override val stateReader: (Bundle?) -> State = ::readState
+	override val screenReader: (Bundle?) -> Screen = ::readScreen
 
 	val screenOne = object : ScreenOne {
-		override val inputText: LiveData<String> = reducer.stateStream
+		override val inputText: LiveData<String> = stateStream
 			.map { workflowState -> if (workflowState.input.isEmpty()) "Value will be displayed here" else workflowState.input }
 			.distinctUntilChanged()
-		override val btnNextEnabled: LiveData<Boolean> = reducer.stateStream
+		override val btnNextEnabled: LiveData<Boolean> = stateStream
 			.map { workflowState -> workflowState.input.isNotEmpty() }
 			.distinctUntilChanged()
 	}
 
 	val screenTwo = object : ScreenTwo {
-		override val btnOkEnabled: LiveData<Boolean> = reducer.stateStream
+		override val btnOkEnabled: LiveData<Boolean> = stateStream
 			.map { workflowState -> workflowState.tmpInput.isNotEmpty() }
 			.distinctUntilChanged()
 	}
@@ -58,36 +49,27 @@ internal class WorkflowViewModel(savedState: Bundle?) :
 	}
 
 	override fun onBackPressed() {
-		reducer.submit(Event.OnBackPressed)
+		submit(Event.OnBackPressed)
 	}
 
 	fun next() {
-		reducer.submit(Event.GoToNext)
+		submit(Event.GoToNext)
 	}
 
 	fun goToInput() {
-		reducer.submit(Event.GoToInput)
+		submit(Event.GoToInput)
 	}
 
 	fun inputChanged(input: String) {
-		reducer.submit(Event.InputChanged(input))
+		submit(Event.InputChanged(input))
 	}
 
 	fun saveTmpInput() {
-		reducer.submit(Event.SaveInput)
+		submit(Event.SaveInput)
 	}
 
 	fun cancelInput() {
-		reducer.submit(Event.CancelInput)
-	}
-
-	companion object {
-		private const val SCREEN_KEY =
-			"com.jgarin.viewmodelstaterestore.activity_based.workflow_one.Screen"
-		private const val INPUT_KEY =
-			"com.jgarin.viewmodelstaterestore.activity_based.workflow_one.Input"
-		private const val TMP_INPUT_KEY =
-			"com.jgarin.viewmodelstaterestore.activity_based.workflow_one.TmpInput"
+		submit(Event.CancelInput)
 	}
 
 }

@@ -3,7 +3,7 @@ package com.jgarin.viewmodelstaterestore
 import android.app.Application
 import android.content.Context
 import com.jgarin.base.App
-import com.jgarin.login.LoginModule
+import com.jgarin.login.di.LoginModule
 import com.jgarin.repository.RepositoryModule
 import com.jgarin.validators.ValidatorsModule
 import com.jgarin.workflowone.di.WorkflowOneModule

@@ -7,9 +7,13 @@ import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.base.ui.BaseWorkflowActivity
 import com.jgarin.base.ui.LayoutResId
 import com.jgarin.workflowone.di.WorkflowOneModule
-import com.jgarin.workflowone.overview.FragmentOverview
-import com.jgarin.workflowone.input.FragmentInput
-import com.jgarin.workflowone.summary.FragmentSummary
+import com.jgarin.workflowone.entities.Event
+import com.jgarin.workflowone.entities.Screen
+import com.jgarin.workflowone.entities.State
+import com.jgarin.workflowone.entities.WorkflowNavigation
+import com.jgarin.workflowone.screens.overview.FragmentOverview
+import com.jgarin.workflowone.screens.input.FragmentInput
+import com.jgarin.workflowone.screens.summary.FragmentSummary
 
 internal class WorkflowActivity :
 	BaseWorkflowActivity<Event, State, Screen, WorkflowNavigation>() {

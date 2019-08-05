@@ -5,9 +5,14 @@ import com.jgarin.base.App
 import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.base.ui.BaseWorkflowActivity
 import com.jgarin.base.ui.LayoutResId
-import com.jgarin.login.email.EmailInputFragment
-import com.jgarin.login.loading.LoadingFragment
-import com.jgarin.login.password.PasswordInputFragment
+import com.jgarin.login.di.LoginModule
+import com.jgarin.login.screens.email.EmailInputFragment
+import com.jgarin.login.entities.Event
+import com.jgarin.login.entities.Screen
+import com.jgarin.login.entities.State
+import com.jgarin.login.entities.WorkflowNavigation
+import com.jgarin.login.screens.loading.LoadingFragment
+import com.jgarin.login.screens.password.PasswordInputFragment
 
 internal class WorkflowActivity : BaseWorkflowActivity<Event, State, Screen, WorkflowNavigation>() {
 
