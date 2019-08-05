@@ -1,20 +1,18 @@
 package com.jgarin.base.wrappers
 
-class SingleLiveEvent<T>(value: T) {
-
-	private val internalValue = value
+data class SingleLiveEvent<T>(private val wrapped: T) {
 
 	var isHandled = false
 		private set
 
-	fun peek() = internalValue
+	fun peek() = wrapped
 
 	val value: T?
 		get() = if (isHandled) {
 			null
 		} else {
 			isHandled = true
-			internalValue
+			wrapped
 		}
 
 }
