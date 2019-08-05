@@ -2,7 +2,7 @@ package com.jgarin.workflowone.overview
 
 import android.os.Bundle
 import android.view.View
-import com.jgarin.base.ui.BaseScreenFragment
+import com.jgarin.base.ui.screen.BaseScreenFragment
 import com.jgarin.base.ui.LayoutResId
 import com.jgarin.extensions.observeNonNull
 import com.jgarin.workflowone.R

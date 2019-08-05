@@ -1,4 +1,4 @@
-package com.jgarin.base.ui
+package com.jgarin.base.ui.screen
 
 import androidx.lifecycle.LiveData
 import com.jgarin.base.ui.entities.BaseScreenState

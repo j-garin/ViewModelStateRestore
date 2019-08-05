@@ -2,7 +2,7 @@ package com.jgarin.login.email
 
 import android.os.Bundle
 import android.view.View
-import com.jgarin.base.ui.BaseScreenFragment
+import com.jgarin.base.ui.screen.BaseScreenFragment
 import com.jgarin.base.ui.LayoutResId
 import com.jgarin.extensions.addAfterTextChangedListener
 import com.jgarin.extensions.observeNonNull

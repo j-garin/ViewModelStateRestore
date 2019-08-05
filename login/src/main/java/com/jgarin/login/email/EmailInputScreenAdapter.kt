@@ -1,7 +1,7 @@
 package com.jgarin.login.email
 
 import androidx.lifecycle.LiveData
-import com.jgarin.base.ui.BaseScreenAdapter
+import com.jgarin.base.ui.screen.BaseScreenAdapter
 import com.jgarin.base.validators.Validator
 import com.jgarin.login.State
 

@@ -1,10 +1,11 @@
-package com.jgarin.base.ui
+package com.jgarin.base.ui.screen
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.jgarin.base.ui.LayoutResId
 
 abstract class BaseScreenFragment : Fragment() {
 
