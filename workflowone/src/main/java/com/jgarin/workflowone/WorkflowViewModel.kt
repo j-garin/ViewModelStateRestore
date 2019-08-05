@@ -16,13 +16,21 @@ internal class WorkflowViewModel(savedState: Bundle?) :
 		savedState
 	) {
 
-	override val stateReducer: (Event, State, Screen) -> State = ::reduceState
-	override val screenReducer: (Event, State, Screen) -> Screen = ::reduceScreen
-	override val workflowReducer: (Event, State, Screen) -> WorkflowNavigation? = ::reduceWrokflow
+	override fun reduceState(event: Event, prev: State, screen: Screen): State =
+		buildNewState(event, prev, screen)
 
-	override val stateSaver: (Bundle, State, Screen) -> Unit = ::saveState
-	override val stateReader: (Bundle?) -> State = ::readState
-	override val screenReader: (Bundle?) -> Screen = ::readScreen
+	override fun reduceScreen(event: Event, prev: State, screen: Screen): Screen =
+		buildNewScreen(event, prev, screen)
+
+	override fun reduceWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? =
+		buildNewWorkflow(event, prev, screen)
+
+	override fun saveState(outState: Bundle, state: State, screen: Screen): Unit =
+		saveWorkflowState(outState, state, screen)
+
+	override fun readState(savedState: Bundle?): State = readInitialState(savedState)
+
+	override fun readScreen(savedState: Bundle?): Screen = readInitialScreen(savedState)
 
 	val screenOne = object : ScreenOne {
 		override val inputText: LiveData<String> = stateStream

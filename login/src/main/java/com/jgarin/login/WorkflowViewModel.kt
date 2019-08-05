@@ -5,16 +5,16 @@ import com.jgarin.base.repository.LoginRepository
 import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.base.validators.Validator
 import com.jgarin.base.wrappers.Response
-import com.jgarin.login.screens.email.EmailInputScreenAdapter
 import com.jgarin.login.entities.Event
 import com.jgarin.login.entities.Screen
 import com.jgarin.login.entities.State
 import com.jgarin.login.entities.WorkflowNavigation
 import com.jgarin.login.functions.*
-import com.jgarin.login.functions.reduceScreen
-import com.jgarin.login.functions.reduceState
-import com.jgarin.login.functions.reduceWorkflow
-import com.jgarin.login.functions.saveState
+import com.jgarin.login.functions.readInitialScreen
+import com.jgarin.login.functions.readInitialState
+import com.jgarin.login.functions.buildNewState
+import com.jgarin.login.functions.saveWorkflowState
+import com.jgarin.login.screens.email.EmailInputScreenAdapter
 import com.jgarin.login.screens.loading.LoadingScreenAdapter
 import com.jgarin.login.screens.password.PasswordInputScreenAdapter
 import kotlinx.coroutines.Dispatchers
@@ -31,14 +31,22 @@ internal class WorkflowViewModel(
 	// Required for viewModel to work
 
 	// Reducers
-	override val stateReducer: (Event, State, Screen) -> State = ::reduceState
-	override val screenReducer: (Event, State, Screen) -> Screen = ::reduceScreen
-	override val workflowReducer: (Event, State, Screen) -> WorkflowNavigation? = ::reduceWorkflow
+	override fun reduceState(event: Event, prev: State, screen: Screen): State =
+		buildNewState(event, prev, screen)
+
+	override fun reduceScreen(event: Event, prev: State, screen: Screen): Screen =
+		buildNewScreen(event, prev, screen)
+
+	override fun reduceWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? =
+		buildNewWorkflow(event, prev, screen)
 
 	// State save-restore. Should I separate saving state and screen into different methods?
-	override val stateSaver: (Bundle, State, Screen) -> Unit = ::saveState
-	override val stateReader: (Bundle?) -> State = ::readInitialState
-	override val screenReader: (Bundle?) -> Screen = ::readInitialScreen
+	override fun saveState(outState: Bundle, state: State, screen: Screen) =
+		saveWorkflowState(outState, state, screen)
+
+	override fun readState(savedState: Bundle?): State = readInitialState(savedState)
+
+	override fun readScreen(savedState: Bundle?): Screen = readInitialScreen(savedState)
 
 	// Output streams for each screen
 	val emailInputScreen = EmailInputScreenAdapter(stateStream)
@@ -46,7 +54,6 @@ internal class WorkflowViewModel(
 	val loadingScreen = LoadingScreenAdapter(stateStream)
 
 	// UI events handlers
-
 	override fun onBackPressed() {
 		submit(Event.BackPressed)
 	}
@@ -57,7 +64,7 @@ internal class WorkflowViewModel(
 		// this is a fast operation. I've put it into a coroutine demonstration purposes
 		viewModelScope.launch {
 			val validationResult = emailValidator.validate(email)
-			launch(Dispatchers.Main) { submit(Event.EmailValidated(validationResult)) }
+			submit(Event.EmailValidated(validationResult))
 		}
 	}
 
@@ -67,7 +74,7 @@ internal class WorkflowViewModel(
 		// this is a fast operation. I've put it into a coroutine demonstration purposes
 		viewModelScope.launch {
 			val validationResult = passwordValidator.validate(password)
-			launch(Dispatchers.Main) { submit(Event.PasswordValidated(validationResult)) }
+			submit(Event.PasswordValidated(validationResult))
 		}
 	}
 

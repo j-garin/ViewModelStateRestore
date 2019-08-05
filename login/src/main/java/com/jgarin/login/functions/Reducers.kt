@@ -6,7 +6,7 @@ import com.jgarin.login.entities.Screen
 import com.jgarin.login.entities.State
 import com.jgarin.login.entities.WorkflowNavigation
 
-internal fun reduceState(event: Event, prev: State, screen: Screen): State {
+internal fun buildNewState(event: Event, prev: State, screen: Screen): State {
 	return when (event) {
 		Event.BackPressed          -> prev
 		is Event.EmailInputChanged -> prev.copy(email = event.email)
@@ -22,7 +22,7 @@ internal fun reduceState(event: Event, prev: State, screen: Screen): State {
 	}
 }
 
-internal fun reduceScreen(event: Event, prev: State, screen: Screen): Screen {
+internal fun buildNewScreen(event: Event, prev: State, screen: Screen): Screen {
 	return when (event) {
 		Event.BackPressed          -> when (screen) {
 			Screen.EmailInput -> screen
@@ -40,7 +40,7 @@ internal fun reduceScreen(event: Event, prev: State, screen: Screen): Screen {
 	}
 }
 
-internal fun reduceWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? {
+internal fun buildNewWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? {
 	return when (event) {
 		Event.BackPressed   -> if (screen == Screen.EmailInput) WorkflowNavigation.EndWorkflow else null
 		is Event.EmailInputChanged,

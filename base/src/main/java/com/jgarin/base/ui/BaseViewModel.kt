@@ -27,37 +27,37 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	protected val viewModelScope = CoroutineScope(Dispatchers.Default)
 
-	protected abstract val stateReducer: (E, WS, NS) -> WS
-	protected abstract val screenReducer: (E, WS, NS) -> NS
-	protected abstract val workflowReducer: (E, WS, NS) -> NW?
+	protected abstract fun reduceState(event: E, prev: WS, screen: NS): WS
+	protected abstract fun reduceScreen(event: E, prev: WS, screen: NS): NS
+	protected abstract fun reduceWorkflow(event: E, prev: WS, screen: NS): NW?
 
-	protected abstract val stateSaver: (Bundle, WS, NS) -> Unit
-	protected abstract val stateReader: (Bundle?) -> WS
-	protected abstract val screenReader: (Bundle?) -> NS
+	protected abstract fun saveState(outState: Bundle, state: WS, screen: NS)
+	protected abstract fun readState(savedState: Bundle?): WS
+	protected abstract fun readScreen(savedState: Bundle?): NS
 
-	private val _stateStream by lazy {
-		MutableLiveData<WS>().apply { value = stateReader(savedState) }
-	}
-	private val _navigationScreen by lazy {
-		MutableLiveData<NS>().apply { value = screenReader(savedState) }
-	}
-	private val _navigationWorkflow by lazy {
-		MutableLiveData<SingleLiveEvent<NW>>()
-	}
+	private val _stateStream = MutableLiveData<WS>()
+		.apply { value = readState(savedState) }
+	private val _navigationScreen = MutableLiveData<NS>()
+		.apply { value = readScreen(savedState) }
+	private val _navigationWorkflow = MutableLiveData<SingleLiveEvent<NW>>()
 
-	private val coroutineChannel by lazy {
-		val channel = Channel<E>()
+	private val coroutineChannel = Channel<E>()
 
+	val stateStream: LiveData<WS> = _stateStream
+	val navigationScreen: LiveData<NS> = _navigationScreen
+	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow
+
+	init {
 		viewModelScope.launch {
-			for (event in channel) {
+			for (event in coroutineChannel) {
 				// I know it throws for nulls, but there're no nulls here unless you make changes to this file.
 				val prev = requireNotNull(_stateStream.value)
 				val screen = requireNotNull(_navigationScreen.value)
 
 				// Calculating these in parallel
-				val newState = async { stateReducer(event, prev, screen) }
-				val newScreen = async { screenReducer(event, prev, screen) }
-				val newWorkflow = async { workflowReducer(event, prev, screen) }
+				val newState = async { reduceState(event, prev, screen) }
+				val newScreen = async { reduceScreen(event, prev, screen) }
+				val newWorkflow = async { reduceWorkflow(event, prev, screen) }
 
 				awaitAll(newState, newScreen, newWorkflow)
 
@@ -68,13 +68,7 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 				}
 			}
 		}
-
-		channel
 	}
-
-	val stateStream: LiveData<WS> by lazy { _stateStream }
-	val navigationScreen: LiveData<NS> by lazy { _navigationScreen }
-	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> by lazy { _navigationWorkflow }
 
 	protected fun submit(event: E) {
 		viewModelScope.launch { coroutineChannel.send(event) }
@@ -84,7 +78,7 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	fun onSaveViewModelState(outState: Bundle) {
 		val state = stateStream.value ?: return
 		val screen = navigationScreen.value ?: return
-		stateSaver(outState, state, screen)
+		saveState(outState, state, screen)
 	}
 
 	// Back navigation is here
@@ -94,4 +88,12 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 		coroutineChannel.close()
 		viewModelScope.cancel()
 	}
+
 }
+
+
+
+
+
+
+

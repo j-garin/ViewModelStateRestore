@@ -5,7 +5,7 @@ import com.jgarin.workflowone.entities.Screen
 import com.jgarin.workflowone.entities.State
 import com.jgarin.workflowone.entities.WorkflowNavigation
 
-internal fun reduceState(event: Event, prev: State, screen: Screen): State {
+internal fun buildNewState(event: Event, prev: State, screen: Screen): State {
 	return when (event) {
 		Event.GoToNext        -> prev // Navigation event. The state doesn't change
 		Event.GoToInput       -> prev // Navigation event. The state doesn't change
@@ -21,7 +21,7 @@ internal fun reduceState(event: Event, prev: State, screen: Screen): State {
 	}
 }
 
-internal fun reduceScreen(event: Event, prev: State, screen: Screen): Screen {
+internal fun buildNewScreen(event: Event, prev: State, screen: Screen): Screen {
 	return when (event) {
 		Event.GoToNext        -> when (screen) {
 			Screen.Overview -> Screen.Summary
@@ -42,7 +42,7 @@ internal fun reduceScreen(event: Event, prev: State, screen: Screen): Screen {
 	}
 }
 
-internal fun reduceWrokflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? {
+internal fun buildNewWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? {
 	return when (event) {
 		Event.GoToNext      -> // Go to the next workflow from screen three
 			if (screen == Screen.Summary) {

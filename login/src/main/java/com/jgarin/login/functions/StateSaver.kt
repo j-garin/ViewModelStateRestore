@@ -13,7 +13,7 @@ private val PasswordKey = "$BaseKey.password"
 private val EmailValidKey = "$BaseKey.emailValid"
 private val PasswordValidKey = "$BaseKey.passwordValid"
 
-internal fun saveState(outState: Bundle, state: State, screen: Screen) {
+internal fun saveWorkflowState(outState: Bundle, state: State, screen: Screen) {
 	val emailValidValue = when (val emailValid = state.emailValid) {
 		Validator.ValidationResult.OK         -> null
 		is Validator.ValidationResult.Failure -> emailValid.reason
