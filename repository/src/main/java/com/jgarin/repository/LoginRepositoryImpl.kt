@@ -10,9 +10,9 @@ internal class LoginRepositoryImpl : LoginRepository {
 
 	override suspend fun login(email: String, passowrd: String): Response<Unit> {
 		delay(2000L) // emulate network call
-		val random = Random(123).nextInt(0, 100)
+		val random = Random(System.currentTimeMillis()).nextInt(0, 100)
 		return when (random) {
-			in 0 until 20 -> Response.Success(Unit) // 20% chance of successful login :)
+			in 0 until 50 -> Response.Success(Unit) // 20% chance of successful login :)
 			else -> Response.Error(Exception("Something went wrong"))
 		}
 
