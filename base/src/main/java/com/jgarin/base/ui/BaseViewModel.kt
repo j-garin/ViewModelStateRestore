@@ -9,6 +9,7 @@ import com.jgarin.base.ui.entities.BaseNavigationScreen
 import com.jgarin.base.ui.entities.BaseNavigationWorkflow
 import com.jgarin.base.ui.entities.BaseWorkflowState
 import com.jgarin.base.wrappers.SingleLiveEvent
+import com.jgarin.extensions.distinctUntilChanged
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 
@@ -27,9 +28,9 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	protected val viewModelScope = CoroutineScope(Dispatchers.Default)
 
-	protected abstract fun reduceState(event: E, prev: WS, screen: NS): WS
-	protected abstract fun reduceScreen(event: E, prev: WS, screen: NS): NS
-	protected abstract fun reduceWorkflow(event: E, prev: WS, screen: NS): NW?
+	protected abstract suspend fun reduceState(event: E, prev: WS, screen: NS): WS
+	protected abstract suspend fun reduceScreen(event: E, prev: WS, screen: NS): NS
+	protected abstract suspend fun reduceWorkflow(event: E, prev: WS, screen: NS): NW?
 
 	protected abstract fun saveState(outState: Bundle, state: WS, screen: NS)
 	protected abstract fun readState(savedState: Bundle?): WS
@@ -43,35 +44,37 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	private val coroutineChannel = Channel<E>()
 
-	val stateStream: LiveData<WS> = _stateStream
-	val navigationScreen: LiveData<NS> = _navigationScreen
-	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow
+	val stateStream: LiveData<WS> = _stateStream.distinctUntilChanged()
+	val navigationScreen: LiveData<NS> = _navigationScreen.distinctUntilChanged()
+	val navigationWorkflow: LiveData<SingleLiveEvent<NW>> = _navigationWorkflow.distinctUntilChanged()
 
 	init {
-		viewModelScope.launch {
+		viewModelScope.launch(Dispatchers.Unconfined) {
 			for (event in coroutineChannel) {
 				// I know it throws for nulls, but there're no nulls here unless you make changes to this file.
 				val prev = requireNotNull(_stateStream.value)
 				val screen = requireNotNull(_navigationScreen.value)
 
 				// Calculating these in parallel
-				val newState = async { reduceState(event, prev, screen) }
-				val newScreen = async { reduceScreen(event, prev, screen) }
-				val newWorkflow = async { reduceWorkflow(event, prev, screen) }
+				val newStateD = async { reduceState(event, prev, screen) }
+				val newScreenD = async { reduceScreen(event, prev, screen) }
+				val newWorkflowD = async { reduceWorkflow(event, prev, screen) }
 
-				awaitAll(newState, newScreen, newWorkflow)
+				val newState = newStateD.await()
+				val newScreen = newScreenD.await()
+				val newWorkflow = newWorkflowD.await()
 
-				withContext(context = Dispatchers.Main) {
-					_stateStream.value = newState.await()
-					_navigationScreen.value = newScreen.await()
-					_navigationWorkflow.value = newWorkflow.await()?.let { SingleLiveEvent(it) }
+				withContext(Dispatchers.Main) {
+					_stateStream.value = newState
+					_navigationScreen.value = newScreen
+					_navigationWorkflow.value = newWorkflow?.let { SingleLiveEvent(it) }
 				}
 			}
 		}
 	}
 
 	protected fun submit(event: E) {
-		viewModelScope.launch { coroutineChannel.send(event) }
+		viewModelScope.launch(Dispatchers.Unconfined) { coroutineChannel.send(event) }
 	}
 
 	// Saving state magic is here. Basically we're relying on the framework for this.

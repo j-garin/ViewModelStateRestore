@@ -16,13 +16,13 @@ internal class WorkflowViewModel(savedState: Bundle?) :
 		savedState
 	) {
 
-	override fun reduceState(event: Event, prev: State, screen: Screen): State =
+	override suspend fun reduceState(event: Event, prev: State, screen: Screen): State =
 		buildNewState(event, prev, screen)
 
-	override fun reduceScreen(event: Event, prev: State, screen: Screen): Screen =
+	override suspend fun reduceScreen(event: Event, prev: State, screen: Screen): Screen =
 		buildNewScreen(event, prev, screen)
 
-	override fun reduceWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? =
+	override suspend fun reduceWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? =
 		buildNewWorkflow(event, prev, screen)
 
 	override fun saveState(outState: Bundle, state: State, screen: Screen): Unit =
