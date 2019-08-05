@@ -1,9 +1,8 @@
 package com.jgarin.login
 
-import com.jgarin.base.ui.BaseWorkflowState
+import com.jgarin.base.ui.entities.BaseWorkflowState
 import com.jgarin.base.validators.Validator
 import com.jgarin.base.wrappers.SingleLiveEvent
-import java.lang.Exception
 
 internal data class State(
 	val email: String,

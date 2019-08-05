@@ -2,6 +2,10 @@ package com.jgarin.base.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.jgarin.base.ui.entities.BaseEvent
+import com.jgarin.base.ui.entities.BaseNavigationScreen
+import com.jgarin.base.ui.entities.BaseNavigationWorkflow
+import com.jgarin.base.ui.entities.BaseWorkflowState
 import com.jgarin.base.wrappers.SingleLiveEvent
 import com.jgarin.extensions.distinctUntilChanged
 import kotlinx.coroutines.*

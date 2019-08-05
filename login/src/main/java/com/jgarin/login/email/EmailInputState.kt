@@ -1,6 +1,6 @@
 package com.jgarin.login.email
 
-import com.jgarin.base.ui.BaseScreenState
+import com.jgarin.base.ui.entities.BaseScreenState
 
 internal data class EmailInputState(
 	val email: String,

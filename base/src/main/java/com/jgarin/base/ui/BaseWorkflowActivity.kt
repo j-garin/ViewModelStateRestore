@@ -2,6 +2,10 @@ package com.jgarin.base.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.jgarin.base.ui.entities.BaseEvent
+import com.jgarin.base.ui.entities.BaseNavigationScreen
+import com.jgarin.base.ui.entities.BaseNavigationWorkflow
+import com.jgarin.base.ui.entities.BaseWorkflowState
 import com.jgarin.extensions.observeNonNull
 
 typealias LayoutResId = Int

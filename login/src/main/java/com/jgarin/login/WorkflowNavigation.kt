@@ -2,7 +2,7 @@ package com.jgarin.login
 
 import android.content.Context
 import com.jgarin.base.App
-import com.jgarin.base.ui.BaseNavigationWorkflow
+import com.jgarin.base.ui.entities.BaseNavigationWorkflow
 
 internal sealed class WorkflowNavigation : BaseNavigationWorkflow {
 	object EndWorkflow : WorkflowNavigation()

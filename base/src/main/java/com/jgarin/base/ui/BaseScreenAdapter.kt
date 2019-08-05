@@ -1,6 +1,8 @@
 package com.jgarin.base.ui
 
 import androidx.lifecycle.LiveData
+import com.jgarin.base.ui.entities.BaseScreenState
+import com.jgarin.base.ui.entities.BaseWorkflowState
 import com.jgarin.extensions.distinctUntilChanged
 import com.jgarin.extensions.map
 

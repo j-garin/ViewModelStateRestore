@@ -1,6 +1,6 @@
 package com.jgarin.login
 
-import com.jgarin.base.ui.BaseEvent
+import com.jgarin.base.ui.entities.BaseEvent
 import com.jgarin.base.validators.Validator
 
 internal sealed class Event : BaseEvent {

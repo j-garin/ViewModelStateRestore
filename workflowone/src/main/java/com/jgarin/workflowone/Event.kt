@@ -1,6 +1,6 @@
 package com.jgarin.workflowone
 
-import com.jgarin.base.ui.BaseEvent
+import com.jgarin.base.ui.entities.BaseEvent
 
 internal sealed class Event : BaseEvent {
 	object GoToNext : Event()

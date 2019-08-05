@@ -3,6 +3,10 @@ package com.jgarin.base.ui
 import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.jgarin.base.ui.entities.BaseEvent
+import com.jgarin.base.ui.entities.BaseNavigationScreen
+import com.jgarin.base.ui.entities.BaseNavigationWorkflow
+import com.jgarin.base.ui.entities.BaseWorkflowState
 import com.jgarin.base.wrappers.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
