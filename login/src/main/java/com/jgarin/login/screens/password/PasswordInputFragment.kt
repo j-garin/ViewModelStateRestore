@@ -23,11 +23,11 @@ internal class PasswordInputFragment : BaseScreenFragment() {
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		etPass.setText(viewModel.passwordInputScreen.screenState.value?.password)
 
 		etPass.addAfterTextChangedListener { viewModel.passwordEntered(it) }
 
 		btnLogin.setOnClickListener { viewModel.onPasswordScreenLoginButtonClicked() }
-
 	}
 
 	private fun renderState(state: PasswordInputScreenState) {
