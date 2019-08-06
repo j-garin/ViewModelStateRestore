@@ -9,6 +9,9 @@ import com.jgarin.base.ui.LayoutResId
 
 abstract class BaseScreenFragment : Fragment() {
 
+    /**
+     * Layout resource to be used as this fragment's view
+     */
     protected abstract val layout: LayoutResId
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
