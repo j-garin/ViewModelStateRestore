@@ -12,13 +12,23 @@ import com.jgarin.extensions.observeNonNull
 typealias LayoutResId = Int
 
 // I don't like having so many generic type parameters. We need to check if there's a way to reduce it
-abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow> : AppCompatActivity() {
+abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNavigationScreen, NW : BaseNavigationWorkflow> :
+	AppCompatActivity() {
 
+	/**
+	 * Layout resource to be used as this activity's view
+	 */
 	protected abstract val layout: LayoutResId
-	// Not sure about the visibility modifier here. Can you think of a case where you actually need the reference to this viewModel in the activity?
-	// Lateinit because we need the savedState Bundle to restore viewModel state and we don't have that until onCreate
-	protected lateinit var viewModel: BaseViewModel<E, WS, NS, NW>
 
+	/**
+	 * Use this viewModel instance if you ever need to access it from the Activity
+	 */
+	protected lateinit var viewModel: BaseViewModel<E, WS, NS, NW>
+		private set
+
+	/**
+	 * Make sure you call super if you override this.
+	 */
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
@@ -32,19 +42,38 @@ abstract class BaseWorkflowActivity<E : BaseEvent, WS : BaseWorkflowState, NS : 
 	}
 
 	// Chose the default implementation in case any libraries call this method
+	/**
+	 * Do NOT override. All back navigation should be handled by the state machine.
+	 */
 	override fun onBackPressed() {
 		viewModel.onBackPressed()
 	}
 
+	/**
+	 * Make sure you call super if you override this.
+	 */
 	override fun onSaveInstanceState(outState: Bundle?) {
 		outState?.let { viewModel.onSaveViewModelState(outState) }
 		super.onSaveInstanceState(outState)
 	}
 
+	/**
+	 * Use [ViewModelProviders] to build instance of the viewModel
+	 */
 	protected abstract fun getViewModel(savedState: Bundle?): BaseViewModel<E, WS, NS, NW>
 
+	/**
+	 * Navigate to other screens inside this workflow.
+	 * This is fired only when the screen change event happened and has not yet been handled.
+	 * No additional checks required.
+	 */
 	protected abstract fun handleScreenChange(screen: NS)
 
+	/**
+	 * Navigate to other workflows.
+	 * This is fired only when the workflow change event happened and has not yet been handled.
+	 * No additional checks required.
+	 * */
 	protected abstract fun handleWorkFlowChange(navigationEvent: NW)
 
 }
