@@ -10,10 +10,6 @@ import com.jgarin.login.entities.Screen
 import com.jgarin.login.entities.State
 import com.jgarin.login.entities.WorkflowNavigation
 import com.jgarin.login.functions.*
-import com.jgarin.login.functions.readInitialScreen
-import com.jgarin.login.functions.readInitialState
-import com.jgarin.login.functions.buildNewState
-import com.jgarin.login.functions.saveWorkflowState
 import com.jgarin.login.screens.email.EmailInputScreenAdapter
 import com.jgarin.login.screens.loading.LoadingScreenAdapter
 import com.jgarin.login.screens.password.PasswordInputScreenAdapter
@@ -41,12 +37,11 @@ internal class WorkflowViewModel(
 		buildNewWorkflow(event, prev, screen)
 
 	// State save-restore. Should I separate saving state and screen into different methods?
-	override fun saveState(outState: Bundle, state: State, screen: Screen) =
-		saveWorkflowState(outState, state, screen)
+	override fun saveState(outState: Bundle, state: State) = saveWorkflowState(outState, state)
 
 	override fun readState(savedState: Bundle?): State = readInitialState(savedState)
 
-	override fun readScreen(savedState: Bundle?): Screen = readInitialScreen(savedState)
+	override fun getInitialScreen(): Screen = Screen.EmailInput
 
 	// Output streams for each screen
 	val emailInputScreen = EmailInputScreenAdapter(stateStream)

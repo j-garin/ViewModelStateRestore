@@ -25,6 +25,8 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	savedState: Bundle?
 ) : ViewModel() {
 
+	private val screenKey = this::class.java.name + ".Screen"
+	private val screenHandledKey = this::class.java.name + ".ScreenHandled"
 
 	protected val viewModelScope = CoroutineScope(Dispatchers.Default)
 
@@ -32,14 +34,14 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	protected abstract suspend fun reduceScreen(event: E, prev: WS, screen: NS): NS
 	protected abstract suspend fun reduceWorkflow(event: E, prev: WS, screen: NS): NW?
 
-	protected abstract fun saveState(outState: Bundle, state: WS, screen: NS)
+	protected abstract fun saveState(outState: Bundle, state: WS)
 	protected abstract fun readState(savedState: Bundle?): WS
-	protected abstract fun readScreen(savedState: Bundle?): NS
+	protected abstract fun getInitialScreen(): NS
 
 	private val _stateStream = MutableLiveData<WS>()
 		.apply { value = readState(savedState) }
 	private val _navigationScreen = MutableLiveData<SingleLiveEvent<NS>>()
-		.apply { value = SingleLiveEvent(readScreen(savedState)) }
+		.apply { value = readScreen(savedState) }
 	private val _navigationWorkflow = MutableLiveData<SingleLiveEvent<NW>>()
 
 	private val coroutineChannel = Channel<E>()
@@ -81,8 +83,9 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	// Saving state magic is here. Basically we're relying on the framework for this.
 	fun onSaveViewModelState(outState: Bundle) {
 		val state = stateStream.value ?: return
-		val screen = navigationScreen.value?.peek() ?: return
-		saveState(outState, state, screen)
+		val screen = navigationScreen.value ?: return
+		saveScreen(outState, screen)
+		saveState(outState, state)
 	}
 
 	// Back navigation is here
@@ -92,6 +95,18 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 		coroutineChannel.close()
 		viewModelScope.cancel()
 	}
+
+	private fun saveScreen(outState: Bundle, screen: SingleLiveEvent<NS>) {
+		outState.putParcelable(screenKey, screen.peek())
+		outState.putBoolean(screenHandledKey, screen.isHandled)
+	}
+
+	private fun readScreen(savedState: Bundle?): SingleLiveEvent<NS> =
+		savedState?.getParcelable<NS>(screenKey)?.let {
+			val screen = SingleLiveEvent(it)
+			if (savedState.getBoolean(screenHandledKey, false)) screen.value // mark as handled
+			screen
+		} ?: SingleLiveEvent(getInitialScreen())
 
 }
 

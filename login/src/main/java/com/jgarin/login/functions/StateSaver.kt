@@ -3,17 +3,15 @@ package com.jgarin.login.functions
 import android.os.Bundle
 import com.jgarin.base.validators.Validator
 import com.jgarin.login.WorkflowViewModel
-import com.jgarin.login.entities.Screen
 import com.jgarin.login.entities.State
 
 private val BaseKey = WorkflowViewModel::class.java.name
-private val ScreenKey = "$BaseKey.screen"
 private val EmailKey = "$BaseKey.email"
 private val PasswordKey = "$BaseKey.password"
 private val EmailValidKey = "$BaseKey.emailValid"
 private val PasswordValidKey = "$BaseKey.passwordValid"
 
-internal fun saveWorkflowState(outState: Bundle, state: State, screen: Screen) {
+internal fun saveWorkflowState(outState: Bundle, state: State) {
 	val emailValidValue = when (val emailValid = state.emailValid) {
 		Validator.ValidationResult.OK         -> null
 		is Validator.ValidationResult.Failure -> emailValid.reason
@@ -46,8 +44,4 @@ internal fun readInitialState(savedState: Bundle?): State {
 		passValid = passwordValid,
 		loginError = null
 	)
-}
-
-internal fun readInitialScreen(savedState: Bundle?): Screen {
-	return savedState?.getSerializable(ScreenKey) as? Screen ?: Screen.EmailInput
 }

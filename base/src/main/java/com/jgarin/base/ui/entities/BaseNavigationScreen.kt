@@ -1,3 +1,5 @@
 package com.jgarin.base.ui.entities
 
-interface BaseNavigationScreen
+import android.os.Parcelable
+
+interface BaseNavigationScreen: Parcelable
