@@ -18,14 +18,8 @@ internal class FragmentInput : BaseScreenFragment() {
 		WorkflowOneModule.instance.getViewModel(requireActivity())
 	}
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		viewModel.screenTwo.btnOkEnabled.observeNonNull(this) { btnOk.isEnabled = it }
-
-	}
-
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.screenTwo.btnOkEnabled.observeNonNull(viewLifecycleOwner) { btnOk.isEnabled = it }
 
 		etInput.addAfterTextChangedListener { viewModel.inputChanged(it) }
 		btnOk.setOnClickListener { viewModel.saveTmpInput() }

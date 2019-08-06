@@ -16,13 +16,9 @@ internal class PasswordInputFragment : BaseScreenFragment() {
 
 	override val layout: LayoutResId = R.layout.fragment_password_input
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		viewModel.passwordInputScreen.screenState.observeNonNull(this, ::renderState)
-	}
-
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.passwordInputScreen.screenState.observeNonNull(viewLifecycleOwner, ::renderState)
+
 		etPass.setText(viewModel.passwordInputScreen.screenState.value?.password)
 
 		etPass.addAfterTextChangedListener { viewModel.passwordEntered(it) }

@@ -16,13 +16,9 @@ internal class EmailInputFragment : BaseScreenFragment() {
 
 	override val layout: LayoutResId = R.layout.fragment_email_input
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		viewModel.emailInputScreen.screenState.observeNonNull(this, ::renderState)
-	}
-
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.emailInputScreen.screenState.observeNonNull(viewLifecycleOwner, ::renderState)
+
 		etEmail.setText(viewModel.emailInputScreen.screenState.value?.email)
 
 		etEmail.addAfterTextChangedListener { viewModel.emailEntered(it) }

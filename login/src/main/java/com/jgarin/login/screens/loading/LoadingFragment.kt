@@ -1,6 +1,7 @@
 package com.jgarin.login.screens.loading
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.jgarin.base.ui.screen.BaseScreenFragment
 import com.jgarin.base.ui.LayoutResId
@@ -14,10 +15,8 @@ internal class LoadingFragment : BaseScreenFragment() {
 
 	override val layout: LayoutResId = R.layout.fragment_loading
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		viewModel.loadingScreen.screenState.observeNonNull(this, ::renderState)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		viewModel.loadingScreen.screenState.observeNonNull(viewLifecycleOwner, ::renderState)
 	}
 
 	private fun renderState(state: LoadingScreenState) {
