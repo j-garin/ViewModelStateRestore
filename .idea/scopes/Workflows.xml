@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Workflows" pattern="file[login]:src/main//*||file[login]:src/main/java//*||file[login]:src/main/res//*||file[workflowone]:src/main//*||file[workflowone]:src/main/java//*||file[workflowone]:src/main/res//*||file[workflowtwo]:src/main//*||file[workflowtwo]:src/main/java//*||file[workflowtwo]:src/main/res//*" />
+</component>

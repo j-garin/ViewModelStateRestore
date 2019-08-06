@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Misc" pattern="file[repository]:src/main/java/com/jgarin/repository//*||file[validators]:src/main/java/com/jgarin/validators//*" />
+</component>
