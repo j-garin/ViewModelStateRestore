@@ -1,7 +1,6 @@
 package com.jgarin.base.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -103,13 +102,11 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	}
 
 	private fun saveScreen(outState: Bundle, screen: SingleLiveEvent<NS>) {
-		Log.d("viewModel", "attempting to save screen from the bundle")
 		outState.putParcelable(screenKey, screen.peek())
 		outState.putBoolean(screenHandledKey, screen.isHandled)
 	}
 
 	private fun readScreen(savedState: Bundle?): SingleLiveEvent<NS> {
-		Log.d("viewModel", "attempting to read saved screen from the bundle")
 		return savedState?.getParcelable<NS>(screenKey)?.let {
 			val screen = SingleLiveEvent(it)
 			if (savedState.getBoolean(screenHandledKey, false)) screen.value // mark as handled
@@ -118,13 +115,11 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	}
 
 	private fun saveWorkflow(outState: Bundle, workflow: SingleLiveEvent<NW>?) {
-		Log.d("viewModel", "attempting to save workflow from the bundle")
 		outState.putParcelable(workflowKey, workflow?.peek())
 		outState.putBoolean(workflowHandledKey, workflow?.isHandled ?: true)
 	}
 
 	private fun readWorkflow(savedState: Bundle?): SingleLiveEvent<NW>? {
-		Log.d("viewModel", "attempting to read saved workflow from the bundle")
 		return savedState?.getParcelable<NW>(workflowKey)?.let {
 			val screen = SingleLiveEvent(it)
 			if (savedState.getBoolean(workflowHandledKey, false)) screen.value // mark as handled
