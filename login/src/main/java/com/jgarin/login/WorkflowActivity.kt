@@ -1,6 +1,7 @@
 package com.jgarin.login
 
 import android.os.Bundle
+import android.widget.Toast
 import com.jgarin.base.App
 import com.jgarin.base.ui.BaseViewModel
 import com.jgarin.base.ui.BaseWorkflowActivity
@@ -20,6 +21,10 @@ internal class WorkflowActivity : BaseWorkflowActivity<Event, State, Screen, Wor
 		get() = application as App
 
 	override val layout: LayoutResId = R.layout.fragment_container
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+	}
 
 	override fun getViewModel(savedState: Bundle?): BaseViewModel<Event, State, Screen, WorkflowNavigation> {
 		return LoginModule.instance.initViewModel(this, savedState)

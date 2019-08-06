@@ -30,7 +30,7 @@ internal class WorkflowViewModel(
 	override suspend fun reduceState(event: Event, prev: State, screen: Screen): State =
 		buildNewState(event, prev, screen)
 
-	override suspend fun reduceScreen(event: Event, prev: State, screen: Screen): Screen =
+	override suspend fun reduceScreen(event: Event, prev: State, screen: Screen): Screen? =
 		buildNewScreen(event, prev, screen)
 
 	override suspend fun reduceWorkflow(event: Event, prev: State, screen: Screen): WorkflowNavigation? =

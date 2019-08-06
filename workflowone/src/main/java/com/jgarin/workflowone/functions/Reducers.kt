@@ -21,21 +21,21 @@ internal fun buildNewState(event: Event, prev: State, screen: Screen): State {
 	}
 }
 
-internal fun buildNewScreen(event: Event, prev: State, screen: Screen): Screen {
+internal fun buildNewScreen(event: Event, prev: State, screen: Screen): Screen? {
 	return when (event) {
 		Event.GoToNext        -> when (screen) {
 			Screen.Overview -> Screen.Summary
-			Screen.Input    -> screen
-			Screen.Summary  -> screen
+			Screen.Input    -> null
+			Screen.Summary  -> null
 		}
 
 		Event.GoToInput       -> Screen.Input
-		is Event.InputChanged -> screen // Stay on the same screen
+		is Event.InputChanged -> null // Stay on the same screen
 		Event.SaveInput,
 		Event.CancelInput     -> Screen.Overview
 
 		Event.OnBackPressed   -> when (screen) {
-			Screen.Overview -> screen // There's nothing before screen one
+			Screen.Overview -> null // There's nothing before screen one
 			Screen.Input,
 			Screen.Summary  -> Screen.Overview
 		}

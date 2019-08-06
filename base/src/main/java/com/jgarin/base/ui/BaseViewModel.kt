@@ -1,6 +1,7 @@
 package com.jgarin.base.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,11 +28,13 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 	private val screenKey = this::class.java.name + ".Screen"
 	private val screenHandledKey = this::class.java.name + ".ScreenHandled"
+	private val workflowKey = this::class.java.name + ".Workflow"
+	private val workflowHandledKey = this::class.java.name + ".WorkflowHandled"
 
 	protected val viewModelScope = CoroutineScope(Dispatchers.Default)
 
 	protected abstract suspend fun reduceState(event: E, prev: WS, screen: NS): WS
-	protected abstract suspend fun reduceScreen(event: E, prev: WS, screen: NS): NS
+	protected abstract suspend fun reduceScreen(event: E, prev: WS, screen: NS): NS?
 	protected abstract suspend fun reduceWorkflow(event: E, prev: WS, screen: NS): NW?
 
 	protected abstract fun saveState(outState: Bundle, state: WS)
@@ -43,6 +46,7 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	private val _navigationScreen = MutableLiveData<SingleLiveEvent<NS>>()
 		.apply { value = readScreen(savedState) }
 	private val _navigationWorkflow = MutableLiveData<SingleLiveEvent<NW>>()
+		.apply { value = readWorkflow(savedState) }
 
 	private val coroutineChannel = Channel<E>()
 
@@ -69,7 +73,7 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 
 				withContext(Dispatchers.Main) {
 					_stateStream.value = newState
-					_navigationScreen.value = newScreen?.let { SingleLiveEvent(it) }
+					if (newScreen != null) _navigationScreen.value = SingleLiveEvent(newScreen)
 					_navigationWorkflow.value = newWorkflow?.let { SingleLiveEvent(it) }
 				}
 			}
@@ -84,8 +88,10 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	fun onSaveViewModelState(outState: Bundle) {
 		val state = stateStream.value ?: return
 		val screen = navigationScreen.value ?: return
-		saveScreen(outState, screen)
+		val workflow = navigationWorkflow.value
 		saveState(outState, state)
+		saveScreen(outState, screen)
+		saveWorkflow(outState, workflow)
 	}
 
 	// Back navigation is here
@@ -97,16 +103,34 @@ abstract class BaseViewModel<E : BaseEvent, WS : BaseWorkflowState, NS : BaseNav
 	}
 
 	private fun saveScreen(outState: Bundle, screen: SingleLiveEvent<NS>) {
+		Log.d("viewModel", "attempting to save screen from the bundle")
 		outState.putParcelable(screenKey, screen.peek())
 		outState.putBoolean(screenHandledKey, screen.isHandled)
 	}
 
-	private fun readScreen(savedState: Bundle?): SingleLiveEvent<NS> =
-		savedState?.getParcelable<NS>(screenKey)?.let {
+	private fun readScreen(savedState: Bundle?): SingleLiveEvent<NS> {
+		Log.d("viewModel", "attempting to read saved screen from the bundle")
+		return savedState?.getParcelable<NS>(screenKey)?.let {
 			val screen = SingleLiveEvent(it)
 			if (savedState.getBoolean(screenHandledKey, false)) screen.value // mark as handled
 			screen
 		} ?: SingleLiveEvent(getInitialScreen())
+	}
+
+	private fun saveWorkflow(outState: Bundle, workflow: SingleLiveEvent<NW>?) {
+		Log.d("viewModel", "attempting to save workflow from the bundle")
+		outState.putParcelable(workflowKey, workflow?.peek())
+		outState.putBoolean(workflowHandledKey, workflow?.isHandled ?: true)
+	}
+
+	private fun readWorkflow(savedState: Bundle?): SingleLiveEvent<NW>? {
+		Log.d("viewModel", "attempting to read saved workflow from the bundle")
+		return savedState?.getParcelable<NW>(workflowKey)?.let {
+			val screen = SingleLiveEvent(it)
+			if (savedState.getBoolean(workflowHandledKey, false)) screen.value // mark as handled
+			screen
+		}
+	}
 
 }
 

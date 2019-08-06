@@ -1,3 +1,5 @@
 package com.jgarin.base.ui.entities
 
-interface BaseNavigationWorkflow
+import android.os.Parcelable
+
+interface BaseNavigationWorkflow: Parcelable

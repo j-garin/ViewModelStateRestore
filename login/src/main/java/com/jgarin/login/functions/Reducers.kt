@@ -22,20 +22,20 @@ internal fun buildNewState(event: Event, prev: State, screen: Screen): State {
 	}
 }
 
-internal fun buildNewScreen(event: Event, prev: State, screen: Screen): Screen {
+internal fun buildNewScreen(event: Event, prev: State, screen: Screen): Screen? {
 	return when (event) {
 		Event.BackPressed          -> when (screen) {
-			Screen.EmailInput -> screen
+			Screen.EmailInput -> null
 			Screen.PassInput  -> Screen.EmailInput
-			Screen.Progress   -> screen
+			Screen.Progress   -> null
 		}
-		is Event.EmailInputChanged -> screen
-		is Event.PassInputChanged  -> screen
-		is Event.EmailValidated    -> screen
-		is Event.PasswordValidated -> screen
+		is Event.EmailInputChanged -> null
+		is Event.PassInputChanged  -> null
+		is Event.EmailValidated    -> null
+		is Event.PasswordValidated -> null
 		Event.GoToPassword         -> Screen.PassInput
 		Event.Login                -> Screen.Progress
-		Event.LoginSuccess         -> screen
+		Event.LoginSuccess         -> Screen.EmailInput
 		is Event.LoginError        -> Screen.PassInput
 	}
 }
